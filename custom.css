@@ -1,14 +1,25 @@
 /* ============================================================================
-   OpenWebUI - Claude/ChatGPT-style Polish (v0.8)
-   Typography, spacing, motion only. No color overrides.
-   Theme-agnostic — works on light AND dark.
-   Reference measurements:
-     - Anthropic: Anthropic Sans/Serif, body 16px/1.6, headings 48/36/28/22/18
-     - ChatGPT:   Inter/Söhne, body 16px/1.65, Victor Mono input
-   We approximate via free Google Fonts (Inter, Source Serif Pro, JetBrains Mono).
+   OpenWebUI - Pure Claude (Anthropic) Style Polish (v0.9)
+   No GPT mixing. Pure Anthropic design language.
+   No color overrides. No theme selectors. Theme-agnostic.
+   ============================================================================
+
+   Anthropic's actual fonts (paid, not freely available):
+     - Anthropic Serif  -> Tiempos / Fraunces / Source Serif 4
+     - Anthropic Sans   -> Styrene / Inter
+     - Anthropic Mono   -> Söhne Mono / JetBrains Mono
+
+   Anthropic's actual spacing/typography rules:
+     - Prose body: SERIF, 16px, line-height 1.6
+     - UI chrome: SANS, 14-15px
+     - Headings: SANS, weight 600
+     - Generous padding everywhere (warmer, more book-like)
+     - Subtle, refined motion (150-200ms)
+     - Base radius: 8px (per Anthropic design system)
+
    ============================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+Pro:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap');
 
 /* ============================================================================
    TYPOGRAPHY - Global
@@ -23,36 +34,35 @@ html, body {
 }
 
 body {
-  font-size: 15px;          /* UI chrome default (sidebar, buttons, labels) */
+  font-size: 15px;
   line-height: 1.5;
-  letter-spacing: -0.003em;
-}
-
-/* ============================================================================
-   MARKDOWN PROSE - Claude/ChatGPT-style message typography
-   ============================================================================ */
-
-.markdown-prose,
-[class*="prose"] {
-  font-family: 'Inter', sans-serif !important;
-  font-size: 16px;          /* ChatGPT + Claude body size */
-  line-height: 1.65;        /* ChatGPT's exact line-height */
   letter-spacing: -0.003em;
   font-weight: 400;
 }
 
-/* Claude uses serif for message body, ChatGPT uses sans. Pick sans by default
-   (closer to ChatGPT which is the more common reference), but allow prose to
-   inherit — no aggressive serif override here. */
+/* ============================================================================
+   MARKDOWN PROSE - Claude's signature SERIF body
+   This is THE defining Claude look - book-like, warm, readable
+   ============================================================================ */
 
-.markdown-prose p,
-[class*="prose"] p {
-  margin: 0 0 0.85em 0;
+.markdown-prose,
+[class*="prose"] {
+  /* THE signature: serif body text */
+  font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif !important;
+  font-size: 16px;
+  line-height: 1.6;            /* Anthropic's exact value */
+  letter-spacing: -0.005em;
+  font-weight: 400;
+  font-optical-sizing: auto;
 }
 
-/* Heading scale matches Claude design system (48/36/28/22/18)
-   We only use h1/h2/h3 in markdown — scale proportionally. */
+/* Paragraphs */
+.markdown-prose p,
+[class*="prose"] p {
+  margin: 0 0 1em 0;
+}
 
+/* Headings - Anthropic uses SANS for headings (NOT serif) */
 .markdown-prose h1,
 .markdown-prose h2,
 .markdown-prose h3,
@@ -61,23 +71,31 @@ body {
 [class*="prose"] h3 {
   font-family: 'Inter', sans-serif !important;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
   line-height: 1.25;
-  margin-top: 1.4em;
-  margin-bottom: 0.5em;
+  margin-top: 1.5em;
+  margin-bottom: 0.55em;
 }
 
-.markdown-prose h1, [class*="prose"] h1 {
-  font-size: 1.75em;        /* ~28px at 16px base */
+.markdown-prose h1,
+[class*="prose"] h1 {
+  font-size: 1.75em;
   font-weight: 700;
-}
-.markdown-prose h2, [class*="prose"] h2 {
-  font-size: 1.375em;       /* ~22px at 16px base */
-}
-.markdown-prose h3, [class*="prose"] h3 {
-  font-size: 1.125em;       /* ~18px at 16px base */
+  margin-top: 1.2em;
+  margin-bottom: 0.6em;
 }
 
+.markdown-prose h2,
+[class*="prose"] h2 {
+  font-size: 1.375em;          /* ~22px */
+}
+
+.markdown-prose h3,
+[class*="prose"] h3 {
+  font-size: 1.125em;          /* ~18px */
+}
+
+/* Strong - serif body, just heavier weight */
 .markdown-prose strong,
 [class*="prose"] strong {
   font-weight: 600;
@@ -88,50 +106,69 @@ body {
   font-style: italic;
 }
 
+/* Links - understated, no underline by default */
 .markdown-prose a,
 [class*="prose"] a {
   text-decoration: none;
   transition: opacity 0.15s ease;
+  font-family: inherit;
 }
 .markdown-prose a:hover,
 [class*="prose"] a:hover {
-  opacity: 0.75;
+  opacity: 0.7;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
+/* Lists - Anthropic style: tighter, well-spaced */
 .markdown-prose ul,
 .markdown-prose ol,
 [class*="prose"] ul,
 [class*="prose"] ol {
   margin: 0.4em 0 1em 0;
-  padding-left: 1.4em;
+  padding-left: 1.5em;
+}
+
+.markdown-prose ul li,
+[class*="prose"] ul li {
+  list-style-type: disc;
+}
+
+.markdown-prose ol li,
+[class*="prose"] ol li {
+  list-style-type: decimal;
 }
 
 .markdown-prose li,
 [class*="prose"] li {
   margin: 0.3em 0;
-  line-height: 1.65;
+  padding-left: 0.2em;
 }
 
+/* Blockquote - Anthropic uses subtle italic */
 .markdown-prose blockquote,
 [class*="prose"] blockquote {
   font-style: italic;
   opacity: 0.85;
   border-left-width: 3px !important;
-  padding-left: 1em !important;
-  margin: 1em 0;
+  padding-left: 1.1em !important;
+  margin: 1.2em 0;
+  font-family: inherit;
 }
 
-/* Horizontal rules - subtle spacing */
+/* Horizontal rules - subtle separator */
 .markdown-prose hr,
 [class*="prose"] hr {
-  margin: 2em 0;
+  margin: 2.2em auto;
+  width: 30%;
   border: none;
   border-top-width: 1px;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
 /* ============================================================================
-   CODE - Inline + blocks (ChatGPT uses Victor Mono; we approximate with JetBrains)
+   CODE - Anthropic Mono (we use JetBrains Mono as free substitute)
    ============================================================================ */
 
 code {
@@ -140,6 +177,7 @@ code {
   padding: 1px 6px;
   border-radius: 5px;
   font-weight: 500;
+  font-feature-settings: 'calt', 'liga';
 }
 
 pre code,
@@ -148,11 +186,11 @@ pre[class*="language-"] {
   font-size: 13.5px;
   line-height: 1.65;
   padding: 16px !important;
-  border-radius: 12px !important;
+  border-radius: 10px !important;        /* Claude uses ~10px radius */
 }
 
 /* ============================================================================
-   TABLES
+   TABLES - Anthropic style: minimal, clean
    ============================================================================ */
 
 table {
@@ -164,7 +202,7 @@ table {
 }
 
 th, td {
-  padding: 10px 14px !important;
+  padding: 11px 15px !important;
   border-bottom-width: 1px !important;
 }
 
@@ -173,45 +211,51 @@ tbody tr {
 }
 
 /* ============================================================================
-   SPACING - Sidebar (matches ChatGPT's tight sidebar)
+   SPACING - Generous, book-like (Anthropic)
    ============================================================================ */
 
+/* Sidebar - SANS (UI chrome), tight padding */
 [class*="sidebar"] button,
 [class*="sidebar"] a,
 nav button,
 nav a {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
   padding-top: 7px !important;
   padding-bottom: 7px !important;
   border-radius: 8px !important;
+  font-weight: 500;
 }
 
-/* Chat input textarea - ChatGPT-style comfortable padding */
+/* Chat input - SANS (Anthropic uses sans, NOT mono) */
 textarea[placeholder*="message" i],
 textarea[placeholder*="Ask" i],
 textarea[placeholder*="Type" i] {
   font-family: 'Inter', sans-serif !important;
-  font-size: 15.5px !important;
+  font-size: 16px !important;
   line-height: 1.5 !important;
   padding: 14px 18px !important;
 }
 
-/* Generic input polish */
+/* Generic inputs */
 input, textarea, select {
-  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  border-radius: 10px;            /* Anthropic base radius */
   padding: 10px 13px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 /* ============================================================================
-   MOTION - Smooth interactions (matches Claude's subtle 150ms transitions)
+   MOTION - Refined, subtle (Anthropic is calmer than ChatGPT)
    ============================================================================ */
 
 button,
 [role="button"],
 a {
-  transition: transform 0.15s ease, opacity 0.15s ease,
-              background-color 0.15s ease, color 0.15s ease,
-              border-color 0.15s ease, box-shadow 0.15s ease !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.18s ease,
+              background-color 0.18s ease, color 0.18s ease,
+              border-color 0.18s ease, box-shadow 0.18s ease !important;
 }
 
 /* Send button - subtle lift */
@@ -222,7 +266,7 @@ button[type="submit"]:active {
   transform: translateY(0);
 }
 
-/* Sidebar items - subtle slide (Claude's hover behavior) */
+/* Sidebar items - very subtle slide (Anthropic is restrained) */
 [class*="sidebar"] button:hover,
 [class*="sidebar"] a:hover,
 nav button:hover,
@@ -231,13 +275,13 @@ nav a:hover {
 }
 
 /* ============================================================================
-   ANIMATIONS - Message entrance (Claude's gentle fade)
+   ANIMATIONS - Anthropic's gentle fade
    ============================================================================ */
 
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -246,7 +290,7 @@ nav a:hover {
 }
 
 [class*="message"]:not([data-faded="true"]) {
-  animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -277,11 +321,11 @@ nav a:hover {
 }
 
 /* ============================================================================
-   SELECTION - Subtle indigo (works on any bg)
+   SELECTION - Subtle indigo
    ============================================================================ */
 
 ::selection {
-  background: rgba(99, 102, 241, 0.25);
+  background: rgba(99, 102, 241, 0.22);
   color: inherit;
 }
 
