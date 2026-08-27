@@ -1,266 +1,250 @@
-/* ================================================================
-   POLISH THEME for Open WebUI
-   Pure typography, spacing, and motion polish.
-   No color overrides — only fonts, rhythm, and feel.
-   ================================================================ */
+/* ============================================================================
+   OpenWebUI - Theme-Agnostic Polish
+   Typography, spacing, motion. Works on light AND dark themes.
+   No color overrides. No theme-specific selectors.
+   ============================================================================ */
 
-/* === TYPOGRAPHY ===
-   Use Inter everywhere (already loaded by OWUI).
-   Generous letter-spacing and line-height for readability. */
+/* Google Fonts - loaded once, available everywhere */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+Pro:wght@400;600;700&display=swap');
 
-html, body, pre, .ProseMirror, textarea, input, button {
-  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont,
-               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  text-rendering: optimizeLegibility;
+/* ============================================================================
+   TYPOGRAPHY - Global
+   ============================================================================ */
+
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* === MARKDOWN PROSE — Claude-style reading experience === */
-.markdown,
+/* ============================================================================
+   MARKDOWN PROSE - The heart of the message experience
+   ============================================================================ */
+
 .markdown-prose,
-.input-prose,
-.message-content,
-[class*="markdown"] {
-  font-size: 16px !important;
-  line-height: 1.75 !important;
+[class*="prose"] {
+  font-size: 16px;
+  line-height: 1.75;
   letter-spacing: -0.003em;
-  word-spacing: 0.015em;
+  font-family: 'Inter', sans-serif !important;
 }
 
-/* Paragraphs — generous breathing room */
-.markdown p, .markdown-prose p, .input-prose p, .message-content p {
-  margin: 0 0 1.1em 0 !important;
+.markdown-prose p,
+[class*="prose"] p {
+  margin: 0 0 1em 0;
 }
 
-/* Headings — use serif (Source Serif Pro) like Claude.ai */
-.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5,
-.markdown-prose h1, .markdown-prose h2, .markdown-prose h3, .markdown-prose h4,
-.input-prose h1, .input-prose h2, .input-prose h3, .input-prose h4,
-.message-content h1, .message-content h2, .message-content h3, .message-content h4 {
-  font-family: "Source Serif Pro", "Iowan Old Style", "Apple Garamond",
-                "Charter", Baskerville, "Times New Roman", serif !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.02em !important;
-  line-height: 1.25 !important;
-  margin-top: 1.5em !important;
-  margin-bottom: 0.5em !important;
-}
-.markdown h1, .markdown-prose h1, .input-prose h1, .message-content h1 {
-  font-size: 1.85rem !important;
-}
-.markdown h2, .markdown-prose h2, .input-prose h2, .message-content h2 {
-  font-size: 1.5rem !important;
-}
-.markdown h3, .markdown-prose h3, .input-prose h3, .message-content h3 {
-  font-size: 1.25rem !important;
+.markdown-prose h1,
+.markdown-prose h2,
+.markdown-prose h3,
+[class*="prose"] h1,
+[class*="prose"] h2,
+[class*="prose"] h3 {
+  font-family: 'Source Serif Pro', Georgia, serif !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 1.5em;
+  margin-bottom: 0.6em;
 }
 
-/* Strong */
-.markdown strong, .markdown-prose strong, .input-prose strong,
-.message-content strong {
-  font-weight: 600;
+.markdown-prose h1, [class*="prose"] h1 { font-size: 1.85em; }
+.markdown-prose h2, [class*="prose"] h2 { font-size: 1.5em; }
+.markdown-prose h3, [class*="prose"] h3 { font-size: 1.2em; }
+
+.markdown-prose strong, [class*="prose"] strong { font-weight: 600; }
+.markdown-prose em, [class*="prose"] em { font-style: italic; }
+
+.markdown-prose a,
+[class*="prose"] a {
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+.markdown-prose a:hover, [class*="prose"] a:hover { opacity: 0.75; }
+
+.markdown-prose ul,
+.markdown-prose ol,
+[class*="prose"] ul,
+[class*="prose"] ol {
+  margin: 0.5em 0 1em 0;
+  padding-left: 1.5em;
 }
 
-/* Links — subtle, with hover lift */
-.markdown a, .markdown-prose a, .input-prose a, .message-content a {
-  text-decoration: none !important;
-  border-bottom: 1px solid currentColor;
+.markdown-prose li,
+[class*="prose"] li {
+  margin: 0.35em 0;
+}
+
+.markdown-prose blockquote,
+[class*="prose"] blockquote {
+  font-style: italic;
   opacity: 0.85;
-  transition: opacity 0.15s ease, background 0.15s ease;
-}
-.markdown a:hover, .markdown-prose a:hover, .input-prose a:hover,
-.message-content a:hover {
-  opacity: 1;
-  background: rgba(99,102,241,0.10);
-  border-radius: 3px;
-  padding: 0 2px;
-  margin: 0 -2px;
+  border-left-width: 3px !important;
+  padding-left: 1em !important;
+  margin: 1em 0;
 }
 
-/* Lists */
-.markdown ul, .markdown ol,
-.markdown-prose ul, .markdown-prose ol,
-.input-prose ul, .input-prose ol,
-.message-content ul, .message-content ol {
-  padding-left: 1.5em !important;
-  margin: 0.6em 0 1.2em 0 !important;
-}
-.markdown li, .markdown-prose li, .input-prose li,
-.message-content li {
-  margin: 0.35em 0 !important;
-  line-height: 1.75 !important;
+/* ============================================================================
+   CODE - Inline and blocks
+   ============================================================================ */
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace !important;
+  font-size: 0.88em;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-weight: 500;
 }
 
-/* Blockquote */
-.markdown blockquote, .markdown-prose blockquote,
-.input-prose blockquote, .message-content blockquote, blockquote {
-  border-left: 3px solid currentColor !important;
-  padding: 8px 18px !important;
-  margin: 1.2em 0 !important;
-  border-radius: 0 8px 8px 0 !important;
-  font-style: italic !important;
-  opacity: 0.85;
-}
-
-/* Inline code — use mono with proper pill */
-.markdown code:not(pre code), .markdown-prose code:not(pre code),
-.input-prose code:not(pre code), .message-content code:not(pre code),
-.codespan, p > code, li > code {
-  font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code",
-               Menlo, Consolas, monospace !important;
-  font-size: 0.875em !important;
-  padding: 2px 7px !important;
-  border-radius: 6px !important;
-  font-weight: 500 !important;
-}
-
-/* === CODE BLOCKS — Claude-style rounded code with breathing room === */
-pre,
-.markdown pre, .markdown-prose pre, .input-prose pre,
-.message-content pre, .hljs, pre > code {
-  font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code",
-               Menlo, Consolas, monospace !important;
-  font-size: 13.5px !important;
-  line-height: 1.7 !important;
+pre code,
+pre[class*="language-"] {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 13.5px;
+  line-height: 1.7;
+  padding: 18px !important;
   border-radius: 12px !important;
-  padding: 18px 22px !important;
-  margin: 1.2em 0 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
-  overflow-x: auto !important;
-  tab-size: 2 !important;
 }
-pre code, .hljs code, pre > code {
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  white-space: pre !important;
-}
-.hljs { border-radius: 12px !important; }
 
-/* Tokyo Night syntax — readable, not garish */
-.hljs-comment, .hljs-quote           { color: #565f89; font-style: italic; }
-.hljs-keyword, .hljs-selector-tag    { color: #bb9af7; }
-.hljs-string, .hljs-symbol           { color: #9ece6a; }
-.hljs-number, .hljs-built_in,
-.hljs-type, .hljs-literal            { color: #ff9e64; }
-.hljs-function, .hljs-title,
-.hljs-attr                          { color: #7aa2f7; }
-.hljs-variable, .hljs-name           { color: #c0caf5; }
-.hljs-tag                            { color: #f7768e; }
-.hljs-attr-name                      { color: #73daca; }
-.hljs-operator, .hljs-punctuation    { color: #89ddff; }
-.hljs-property                       { color: #73daca; }
-.hljs-deletion                       { color: #f7768e; }
+/* ============================================================================
+   TABLES
+   ============================================================================ */
 
-/* === TABLES — ChatGPT-style: rounded, subtle border, generous padding === */
-.markdown table, .markdown-prose table, .input-prose table,
-.message-content table, table {
+table {
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  width: 100% !important;
-  margin: 1.4em 0 !important;
-  border-radius: 10px !important;
-  overflow: hidden !important;
-  font-size: 14.5px !important;
-}
-.markdown th, .markdown-prose th, .input-prose th,
-.message-content th, th {
-  font-weight: 600 !important;
-  text-align: left !important;
-  padding: 12px 16px !important;
-  letter-spacing: 0 !important;
-  text-transform: none !important;
-  font-family: inherit !important;
-}
-.markdown td, .markdown-prose td, .input-prose td,
-.message-content td, td {
-  padding: 12px 16px !important;
-}
-.markdown tbody tr:last-child td { border-bottom: 0 !important; }
-.markdown tbody tr, tbody tr {
-  transition: background 0.15s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 14.5px;
 }
 
-/* === SPACING — generous padding everywhere === */
-/* Sidebar items — bigger touch targets */
-#sidebar-chat-item {
-  padding-block: 8px !important;
+th, td {
+  padding: 12px 16px !important;
+  border-bottom-width: 1px !important;
+}
+
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* ============================================================================
+   SPACING - Sidebar, inputs, buttons
+   ============================================================================ */
+
+[class*="sidebar"] button,
+[class*="sidebar"] a,
+nav button,
+nav a {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
   border-radius: 10px !important;
 }
 
-/* Chat input — comfortable padding */
-textarea,
-textarea[id*="chat"],
-textarea[placeholder*="message" i] {
-  padding: 16px 20px !important;
-  line-height: 1.6 !important;
+/* Chat input textarea */
+textarea[placeholder*="message" i],
+textarea[placeholder*="Ask" i],
+textarea[placeholder*="Type" i] {
   font-size: 15.5px !important;
+  padding: 16px 20px !important;
+  line-height: 1.5;
 }
 
-/* Inputs — comfortable padding */
-input[type="text"], input[type="search"], input[type="email"],
-input[type="password"], input[type="url"], input:not([type]),
-textarea, select {
-  padding: 11px 14px !important;
-  border-radius: 10px !important;
+/* Generic input/textarea/select polish */
+input, textarea, select {
+  border-radius: 10px;
+  padding: 11px 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* === MOTION — smooth, gentle transitions everywhere === */
-button, [role="button"], a, [class*="dropdown"], [role="menuitem"] {
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
-              transform 0.15s ease, box-shadow 0.2s ease,
-              opacity 0.15s ease !important;
+/* ============================================================================
+   MOTION - Smooth interactions
+   ============================================================================ */
+
+button,
+[role="button"],
+a {
+  transition: transform 0.15s ease, opacity 0.15s ease,
+              background-color 0.15s ease, color 0.15s ease,
+              border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-/* Hover lift on key buttons */
-#send-message-button:hover,
-button.btn-primary:hover {
+/* Send button - subtle lift on hover */
+button[type="submit"]:hover {
   transform: translateY(-1px);
 }
-#send-message-button:active {
+button[type="submit"]:active {
   transform: translateY(0);
 }
 
-/* Sidebar item hover — subtle slide */
-#sidebar-chat-item:hover {
+/* Sidebar items - slide on hover */
+[class*="sidebar"] button:hover,
+[class*="sidebar"] a:hover,
+nav button:hover,
+nav a:hover {
   transform: translateX(3px);
 }
 
-/* Message entrance — subtle fade up */
-@media (prefers-reduced-motion: no-preference) {
-  [class*="message-"], .message-bubble {
-    animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* ============================================================================
+   ANIMATIONS - Message entrance
+   ============================================================================ */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* === SCROLLBAR — slim and unobtrusive === */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(127,127,127,0.3) transparent;
+[class*="message"]:not([data-faded="true"]) {
+  animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   SCROLLBAR - Slim, theme-agnostic
+   ============================================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 ::-webkit-scrollbar-thumb {
-  background: rgba(127,127,127,0.3);
-  border-radius: 10px;
+  border-radius: 4px;
+  background: rgba(128, 128, 128, 0.25);
   transition: background 0.2s ease;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(127,127,127,0.5); }
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.45);
+}
 
-/* === SELECTION === */
+/* ============================================================================
+   SELECTION - Subtle indigo (works on any bg)
+   ============================================================================ */
+
 ::selection {
-  background: rgba(99,102,241,0.3);
+  background: rgba(99, 102, 241, 0.25);
   color: inherit;
 }
 
-/* === FOCUS === */
-:focus-visible {
-  outline: 2px solid rgba(99,102,241,0.6);
+/* ============================================================================
+   FOCUS - Accessibility rings
+   ============================================================================ */
+
+*:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.6);
   outline-offset: 2px;
   border-radius: 6px;
 }
