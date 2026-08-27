@@ -6,9 +6,13 @@
 
 /* =====================================================================
    1. DESIGN TOKENS — single source of truth
+   IMPORTANT: :where() has zero specificity; use direct selectors here
+   so our tokens beat Open WebUI's later stylesheet.
    ===================================================================== */
-@layer polish.tokens {
-  :where(:root, .dark, .light, [data-theme]) {
+:root,
+:root.dark,
+:root.light,
+:root[data-theme] {
     /* Radii */
     --radius-xs: 6px;
     --radius-sm: 10px;
@@ -50,12 +54,11 @@
                   Baskerville,"Times New Roman",serif;
     --font-mono: "JetBrains Mono","Fira Code","SF Mono","Cascadia Code",
                  Menlo,Consolas,monospace;
-  }
 }
 
 /* Light-mode overrides (auto-switch when OWUI uses a light theme) */
-@layer polish.tokens {
-  :where(.light, [data-theme="light"]) {
+:root.light,
+:root[data-theme="light"] {
     --ink-1: rgba(15,18,28,.95);
     --ink-2: rgba(15,18,28,.78);
     --ink-3: rgba(15,18,28,.55);
@@ -66,13 +69,12 @@
     --line-1: rgba(15,18,28,.08);
     --line-2: rgba(15,18,28,.15);
     --code-bg: #f6f7fb;
-  }
 }
 
 /* =====================================================================
    2. GLOBAL BASE — typographic & smoothing
    ===================================================================== */
-@layer polish.base {
+/* @layer polish.base { */
   :where(html, body, .app, #app, .chat-container, .message, .prose) {
     font-family: var(--font-sans);
     font-feature-settings: "cv02","cv03","cv04","cv11","ss01";
@@ -83,13 +85,12 @@
   :where(*, *::before, *::after) {
     box-sizing: border-box;
   }
-}
 
 /* =====================================================================
    3. TYPOGRAPHY — headings + prose
    Targets every known markdown container.
    ===================================================================== */
-@layer polish.type {
+/* @layer polish.type { */
   :where(h1, h2, h3, h4, h5, h6,
          .markdown :where(h1, h2, h3, h4),
          .md :where(h1, h2, h3, h4),
@@ -258,12 +259,11 @@
     box-shadow: var(--shadow-2);
     margin: 1em 0;
   }
-}
 
 /* =====================================================================
    4. CODE BLOCKS — Tokyo Night palette + header bar
    ===================================================================== */
-@layer polish.code {
+/* @layer polish.code { */
   :where(pre,
          .markdown pre, .md pre, .prose pre,
          [class*="markdown"] pre, [class*="prose"] pre,
@@ -356,12 +356,11 @@
          .hljs-punctuation, .token.punctuation) { color: #89ddff; }
   :where(.hljs-property, .token.property)     { color: #73daca; }
   :where(.hljs-title,    .token.title)        { color: #7aa2f7; }
-}
 
 /* =====================================================================
    5. ARTIFACT CARDS — Claude-style with left rail + header
    ===================================================================== */
-@layer polish.artifact {
+/* @layer polish.artifact { */
   :where(.artifact, .claude-artifact,
          .markdown .artifact, .md .artifact, .prose .artifact,
          [class*="markdown"] .artifact,
@@ -406,12 +405,11 @@
     background: var(--surface-1);
     border-radius: var(--radius-md);
   }
-}
 
 /* =====================================================================
    6. MESSAGE BUBBLES
    ===================================================================== */
-@layer polish.messages {
+/* @layer polish.messages { */
   :where(.message-bubble, .chat-message, [class*="message-"]) {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-1);
@@ -433,12 +431,11 @@
       animation: none;
     }
   }
-}
 
 /* =====================================================================
    7. CHAT INPUT
    ===================================================================== */
-@layer polish.input {
+/* @layer polish.input { */
   :where(.chat-input, [class*="chat-input"]) {
     border-radius: var(--radius-xl);
     padding: 6px 8px;
@@ -471,12 +468,11 @@
   textarea {
     font-family: var(--font-sans);
   }
-}
 
 /* =====================================================================
    8. SIDEBAR
    ===================================================================== */
-@layer polish.sidebar {
+/* @layer polish.sidebar { */
   :where(.sidebar, [class*="sidebar"]) {
     background: var(--surface-1);
     border-right: 1px solid var(--line-1);
@@ -500,12 +496,11 @@
     background: var(--accent-soft);
     font-weight: 500;
   }
-}
 
 /* =====================================================================
    9. BUTTONS
    ===================================================================== */
-@layer polish.buttons {
+/* @layer polish.buttons { */
   :where(button.btn, button[class*="btn"], .btn, button[class*="button"]) {
     border-radius: var(--radius-md);
     padding: 9px 18px;
@@ -527,12 +522,11 @@
   :where(button.btn-primary:hover, .btn-primary:hover, button.primary:hover) {
     background: var(--accent-hover);
   }
-}
 
 /* =====================================================================
    10. SCROLLBAR (Webkit + Firefox fallback)
    ===================================================================== */
-@layer polish.scrollbar {
+/* @layer polish.scrollbar { */
   * {
     scrollbar-width: thin;
     scrollbar-color: rgba(127,127,127,.25) transparent;
@@ -547,12 +541,11 @@
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(127,127,127,.45);
   }
-}
 
 /* =====================================================================
    11. SELECTION + MISC
    ===================================================================== */
-@layer polish.misc {
+/* @layer polish.misc { */
   ::selection {
     background: rgba(99,102,241,.35);
     color: inherit;
@@ -562,17 +555,15 @@
     outline-offset: 2px;
     border-radius: var(--radius-xs);
   }
-}
 
 /* =====================================================================
    12. SAFETY NET — kill any rule that breaks our typography
    Uses !important last-resort only for code/typography correctness
    ===================================================================== */
-@layer polish.safety {
+/* @layer polish.safety { */
   pre code,
   pre code *,
   .hljs, .hljs * { font-family: var(--font-mono) !important; }
   .markdown, .md, .prose, .message-content,
   [class*="markdown"], [class*="prose"] { font-family: var(--font-sans) !important; }
   h1, h2, h3, h4 { font-family: var(--font-serif) !important; }
-}
