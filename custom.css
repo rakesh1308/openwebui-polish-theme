@@ -1,569 +1,385 @@
 /* =====================================================================
-   POLISH THEME — BULLETPROOF
-   Designed to work across Open WebUI versions (pre-0.5 → 0.6+)
-   Self-healing, layered, zero-conflict CSS.
+   POLISH THEME for Open WebUI
+   Targets OWUI's actual Tailwind v4 tokens and class names:
+     - --color-gray-50 → --color-gray-950 (oklch)
+     - .markdown / .markdown-prose / .input-prose
+     - .hljs (highlight.js code blocks)
+     - .ProseMirror (rich text editor)
+   Strategy: override Tailwind tokens + add polish for chat UI.
    ===================================================================== */
 
-/* =====================================================================
-   1. DESIGN TOKENS — single source of truth
-   IMPORTANT: :where() has zero specificity; use direct selectors here
-   so our tokens beat Open WebUI's later stylesheet.
-   ===================================================================== */
-:root,
+/* === DARK THEME === */
 :root.dark,
-:root.light,
-:root[data-theme] {
-    /* Radii */
-    --radius-xs: 6px;
-    --radius-sm: 10px;
-    --radius-md: 14px;
-    --radius-lg: 20px;
-    --radius-xl: 28px;
-
-    /* Shadows */
-    --shadow-1: 0 1px 2px rgba(0,0,0,.04), 0 1px 3px rgba(0,0,0,.06);
-    --shadow-2: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
-    --shadow-3: 0 12px 32px rgba(0,0,0,.14), 0 4px 10px rgba(0,0,0,.06);
-
-    /* Motion */
-    --ease-out: cubic-bezier(.16, 1, .3, 1);
-    --t-fast: 120ms var(--ease-out);
-    --t-base: 200ms var(--ease-out);
-    --t-slow: 360ms var(--ease-out);
-
-    /* Palette */
-    --accent: #6366f1;
-    --accent-hover: #4f46e5;
-    --accent-soft: rgba(99,102,241,.14);
-    --accent-line: rgba(99,102,241,.35);
-    --ink-1: rgba(255,255,255,.95);
-    --ink-2: rgba(255,255,255,.78);
-    --ink-3: rgba(255,255,255,.55);
-    --ink-mute: rgba(255,255,255,.35);
-    --surface-1: rgba(255,255,255,.025);
-    --surface-2: rgba(255,255,255,.045);
-    --surface-3: rgba(255,255,255,.075);
-    --line-1: rgba(255,255,255,.06);
-    --line-2: rgba(255,255,255,.12);
-    --code-bg: #1a1b26;
-
-    /* Typography */
-    --font-sans: "Inter","SF Pro Display",-apple-system,BlinkMacSystemFont,
-                 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    --font-serif: "Source Serif Pro","Iowan Old Style","Apple Garamond",
-                  Baskerville,"Times New Roman",serif;
-    --font-mono: "JetBrains Mono","Fira Code","SF Mono","Cascadia Code",
-                 Menlo,Consolas,monospace;
+:root,
+html.dark,
+.dark {
+  /* Refined dark palette: warmer blacks, lifted mid-grays */
+  --color-gray-50:  oklch(0.985 0 0);
+  --color-gray-100: oklch(0.955 0.005 270);
+  --color-gray-200: oklch(0.92  0.005 270);
+  --color-gray-300: oklch(0.85  0.008 270);
+  --color-gray-400: oklch(0.72  0.01  270);
+  --color-gray-500: oklch(0.60  0.012 270);
+  --color-gray-600: oklch(0.50  0.014 270);
+  --color-gray-700: oklch(0.40  0.016 270);
+  --color-gray-800: oklch(0.28  0.018 270);
+  --color-gray-850: oklch(0.22  0.020 270);
+  --color-gray-900: oklch(0.16  0.022 270);
+  --color-gray-950: oklch(0.10  0.024 270);
 }
 
-/* Light-mode overrides (auto-switch when OWUI uses a light theme) */
-:root.light,
-:root[data-theme="light"] {
-    --ink-1: rgba(15,18,28,.95);
-    --ink-2: rgba(15,18,28,.78);
-    --ink-3: rgba(15,18,28,.55);
-    --ink-mute: rgba(15,18,28,.35);
-    --surface-1: rgba(15,18,28,.02);
-    --surface-2: rgba(15,18,28,.04);
-    --surface-3: rgba(15,18,28,.07);
-    --line-1: rgba(15,18,28,.08);
-    --line-2: rgba(15,18,28,.15);
-    --code-bg: #f6f7fb;
+/* Slightly warmer/cooler depending on preference */
+html.dark,
+html {
+  --color-blue-500: oklch(0.65 0.20 268);
+  --color-blue-600: oklch(0.58 0.22 268);
+  --color-blue-700: oklch(0.50 0.23 268);
 }
 
-/* =====================================================================
-   2. GLOBAL BASE — typographic & smoothing
-   ===================================================================== */
-/* @layer polish.base { */
-  :where(html, body, .app, #app, .chat-container, .message, .prose) {
-    font-family: var(--font-sans);
-    font-feature-settings: "cv02","cv03","cv04","cv11","ss01";
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  :where(*, *::before, *::after) {
-    box-sizing: border-box;
-  }
+/* === GLOBAL POLISH === */
+html, body, pre {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-/* =====================================================================
-   3. TYPOGRAPHY — headings + prose
-   Targets every known markdown container.
-   ===================================================================== */
-/* @layer polish.type { */
-  :where(h1, h2, h3, h4, h5, h6,
-         .markdown :where(h1, h2, h3, h4),
-         .md :where(h1, h2, h3, h4),
-         .prose :where(h1, h2, h3, h4),
-         [class*="markdown"] :where(h1, h2, h3, h4),
-         [class*="prose"] :where(h1, h2, h3, h4),
-         .message-content :where(h1, h2, h3, h4)) {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    letter-spacing: -.015em;
-    line-height: 1.25;
-    margin-top: 1.6em;
-    margin-bottom: .55em;
-    color: var(--ink-1);
-  }
-  :where(.markdown :where(h1), .md :where(h1), .prose :where(h1),
-         [class*="markdown"] :where(h1), [class*="prose"] :where(h1),
-         .message-content :where(h1)) { font-size: 2rem; }
-  :where(.markdown :where(h2), .md :where(h2), .prose :where(h2),
-         [class*="markdown"] :where(h2), [class*="prose"] :where(h2),
-         .message-content :where(h2)) { font-size: 1.6rem; }
-  :where(.markdown :where(h3), .md :where(h3), .prose :where(h3),
-         [class*="markdown"] :where(h3), [class*="prose"] :where(h3),
-         .message-content :where(h3)) { font-size: 1.3rem; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: oklch(0.40 0.01 270);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.55 0.01 270);
+}
 
-  /* Prose body */
-  :where(.markdown, .md, .prose, [class*="markdown"], [class*="prose"],
-         .message-content) {
-    font-size: 16px;
-    line-height: 1.75;
-    letter-spacing: -.003em;
-    word-spacing: .02em;
-    color: var(--ink-1);
-  }
-  :where(.markdown p, .md p, .prose p,
-         [class*="markdown"] p, [class*="prose"] p,
-         .message-content p) {
-    margin: 0 0 1.05em 0;
-  }
-  :where(.markdown strong, .md strong, .prose strong,
-         [class*="markdown"] strong, [class*="prose"] strong,
-         .message-content strong) {
-    font-weight: 600;
-    color: var(--ink-1);
-  }
+::selection {
+  background: oklch(0.65 0.20 268 / 0.35);
+  color: inherit;
+}
 
-  /* Lists */
-  :where(.markdown :where(ul, ol), .md :where(ul, ol), .prose :where(ul, ol),
-         [class*="markdown"] :where(ul, ol),
-         [class*="prose"] :where(ul, ol),
-         .message-content :where(ul, ol)) {
-    padding-left: 1.5em;
-    margin: .8em 0 1.2em 0;
-  }
-  :where(.markdown li, .md li, .prose li,
-         [class*="markdown"] li, [class*="prose"] li,
-         .message-content li) {
-    margin: .35em 0;
-    line-height: 1.7;
-  }
-  :where(.markdown li::marker, .md li::marker, .prose li::marker,
-         .message-content li::marker) { color: var(--ink-mute); }
+/* === SIDEBAR === */
+/* OWUI sidebar uses #sidebar-chat-item and bg-gray-50/950 */
+#sidebar {
+  border-right: 1px solid var(--color-gray-800, oklch(0.28 0.018 270));
+  background: var(--color-gray-950, oklch(0.10 0.024 270));
+}
 
-  /* Links */
-  :where(.markdown a, .md a, .prose a,
-         [class*="markdown"] a, [class*="prose"] a,
-         .message-content a) {
-    color: var(--accent);
-    text-decoration: none;
-    border-bottom: 1px solid var(--accent-line);
-    transition: background var(--t-base), border-color var(--t-base);
-  }
-  :where(.markdown a:hover, .md a:hover, .prose a:hover,
-         [class*="markdown"] a:hover, [class*="prose"] a:hover,
-         .message-content a:hover) {
-    background: var(--accent-soft);
-    border-bottom-color: var(--accent);
-    border-radius: 3px;
-    padding: 0 2px;
-    margin: 0 -2px;
-  }
+#sidebar-chat-item {
+  border-radius: 10px;
+  margin-bottom: 2px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+#sidebar-chat-item:hover {
+  background: var(--color-gray-850, oklch(0.22 0.020 270));
+  transform: translateX(2px);
+}
+#sidebar-chat-item.selected,
+#sidebar-chat-item.active {
+  background: oklch(0.58 0.22 268 / 0.16);
+}
 
-  /* Inline code */
-  :where(.markdown :where(code):not(pre code),
-         .md :where(code):not(pre code),
-         .prose :where(code):not(pre code),
-         [class*="markdown"] :where(code):not(pre code),
-         [class*="prose"] :where(code):not(pre code),
-         .message-content :where(code):not(pre code),
-         p > code, li > code) {
-    font-family: var(--font-mono);
-    font-size: .88em;
-    padding: 2px 6px;
-    border-radius: var(--radius-xs);
-    background: var(--surface-3);
-    border: 1px solid var(--line-2);
-    font-weight: 500;
-  }
+/* === MARKDOWN CONTENT (chat messages) === */
+.markdown,
+.markdown-prose,
+.input-prose,
+.message-content,
+[class*="markdown"] {
+  font-size: 15.5px !important;
+  line-height: 1.7 !important;
+  letter-spacing: -0.003em;
+  word-spacing: 0.02em;
+}
 
-  /* Blockquote */
-  :where(.markdown blockquote, .md blockquote, .prose blockquote,
-         [class*="markdown"] blockquote, [class*="prose"] blockquote,
-         .message-content blockquote, blockquote) {
-    border-left: 3px solid var(--accent);
-    background: var(--accent-soft);
-    padding: 12px 18px;
-    margin: 1.2em 0;
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    font-style: italic;
-    color: var(--ink-2);
-  }
+.markdown p,
+.markdown-prose p,
+.input-prose p,
+.message-content p {
+  margin: 0 0 1em 0 !important;
+}
 
-  /* Tables */
-  :where(.markdown table, .md table, .prose table,
-         [class*="markdown"] table, [class*="prose"] table,
-         .message-content table, table) {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    margin: 1.4em 0;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    box-shadow: var(--shadow-1);
-    font-size: 14.5px;
-    border: 1px solid var(--line-1);
-  }
-  :where(.markdown :where(th, td), .md :where(th, td),
-         .prose :where(th, td),
-         [class*="markdown"] :where(th, td),
-         [class*="prose"] :where(th, td),
-         .message-content :where(th, td), th, td) {
-    padding: 10px 14px;
-  }
-  :where(.markdown th, .md th, .prose th,
-         [class*="markdown"] th, [class*="prose"] th,
-         .message-content th, th) {
-    background: var(--surface-2);
-    font-weight: 600;
-    text-align: left;
-    border-bottom: 1px solid var(--line-2);
-  }
-  :where(.markdown td, .md td, .prose td,
-         [class*="markdown"] td, [class*="prose"] td,
-         .message-content td, td) {
-    border-bottom: 1px solid var(--line-1);
-  }
-  :where(tbody tr:last-child :where(td)) { border-bottom: 0; }
-  :where(tbody tr:hover) { background: var(--surface-1); }
+.markdown h1, .markdown h2, .markdown h3,
+.markdown-prose h1, .markdown-prose h2, .markdown-prose h3,
+.input-prose h1, .input-prose h2, .input-prose h3,
+.message-content h1, .message-content h2, .message-content h3 {
+  font-family: "Source Serif Pro", "Iowan Old Style", "Apple Garamond",
+                Baskerville, "Times New Roman", serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  margin: 1.4em 0 0.5em 0 !important;
+}
+.markdown h1, .markdown-prose h1, .input-prose h1, .message-content h1 {
+  font-size: 1.8rem !important;
+}
+.markdown h2, .markdown-prose h2, .input-prose h2, .message-content h2 {
+  font-size: 1.45rem !important;
+}
+.markdown h3, .markdown-prose h3, .input-prose h3, .message-content h3 {
+  font-size: 1.2rem !important;
+}
 
-  /* Horizontal rule */
-  :where(.markdown hr, .md hr, .prose hr,
-         [class*="markdown"] hr, [class*="prose"] hr,
-         .message-content hr, hr) {
-    border: 0;
-    height: 1px;
-    background: var(--line-2);
-    margin: 2em 0;
-  }
+.markdown a, .markdown-prose a, .input-prose a, .message-content a {
+  color: oklch(0.70 0.16 268) !important;
+  text-decoration: none;
+  border-bottom: 1px solid oklch(0.70 0.16 268 / 0.4);
+  transition: background 0.15s, border-color 0.15s;
+}
+.markdown a:hover, .markdown-prose a:hover, .input-prose a:hover, .message-content a:hover {
+  background: oklch(0.58 0.22 268 / 0.12);
+  border-bottom-color: oklch(0.70 0.16 268);
+}
 
-  /* Images */
-  :where(.markdown img, .md img, .prose img,
-         [class*="markdown"] img, [class*="prose"] img,
-         .message-content img) {
-    max-width: 100%;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-2);
-    margin: 1em 0;
-  }
+.markdown ul, .markdown ol, .markdown-prose ul, .markdown-prose ol,
+.input-prose ul, .input-prose ol, .message-content ul, .message-content ol {
+  padding-left: 1.5em !important;
+  margin: 0.6em 0 1em 0 !important;
+}
+.markdown li, .markdown-prose li, .input-prose li, .message-content li {
+  margin: 0.3em 0 !important;
+}
 
-/* =====================================================================
-   4. CODE BLOCKS — Tokyo Night palette + header bar
-   ===================================================================== */
-/* @layer polish.code { */
-  :where(pre,
-         .markdown pre, .md pre, .prose pre,
-         [class*="markdown"] pre, [class*="prose"] pre,
-         .message-content pre,
-         .shiki, .codeblock, .code-block,
-         [class*="codeblock"], [class*="code-block"]) {
-    font-family: var(--font-mono);
-    font-size: 13.5px;
-    line-height: 1.65;
-    border-radius: var(--radius-md);
-    padding: 18px 22px;
-    margin: 1.2em 0;
-    background: var(--code-bg);
-    border: 1px solid var(--line-2);
-    box-shadow: var(--shadow-2);
-    overflow-x: auto;
-    tab-size: 2;
-    position: relative;
-  }
-  /* Fallback for browsers without :where pre */
-  pre {
-    font-family: var(--font-mono);
-    font-size: 13.5px;
-    line-height: 1.65;
-    border-radius: var(--radius-md);
-    background: var(--code-bg);
-    padding: 18px 22px;
-  }
+.markdown blockquote, .markdown-prose blockquote,
+.input-prose blockquote, .message-content blockquote,
+blockquote {
+  border-left: 3px solid oklch(0.58 0.22 268) !important;
+  background: oklch(0.58 0.22 268 / 0.08) !important;
+  padding: 10px 16px !important;
+  margin: 1em 0 !important;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--color-gray-300, oklch(0.85 0.008 270));
+}
 
-  :where(pre code, .shiki code, .codeblock code) {
-    font-family: var(--font-mono);
-    font-size: inherit;
-    background: transparent !important;
-    border: 0 !important;
-    padding: 0 !important;
-    color: #c0caf5;
-    display: block;
-    white-space: pre;
-  }
+/* Tables */
+.markdown table, .markdown-prose table, .input-prose table,
+.message-content table, table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 1.2em 0 !important;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--color-gray-700, oklch(0.40 0.016 270));
+  font-size: 14px;
+}
+.markdown th, .markdown-prose th, .input-prose th,
+.message-content th, th {
+  background: var(--color-gray-800, oklch(0.28 0.018 270));
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-gray-700, oklch(0.40 0.016 270));
+}
+.markdown td, .markdown-prose td, .input-prose td,
+.message-content td, td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-gray-800, oklch(0.28 0.018 270));
+}
+.markdown tbody tr:last-child td, tr:last-child td { border-bottom: 0; }
+.markdown tbody tr:hover, tbody tr:hover {
+  background: var(--color-gray-850, oklch(0.22 0.020 270));
+}
 
-  /* Code block header bar */
-  :where(.codeblock-header, .code-block-header, .codeblock-header-wrapper) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 14px;
-    background: rgba(255,255,255,.05);
-    border: 1px solid var(--line-2);
-    border-bottom: 0;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-  }
-  :where(.codeblock-header + pre, .code-block-header + pre) {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    margin-top: 0;
-  }
+/* Inline code */
+.markdown code, .markdown-prose code, .input-prose code,
+.message-content code, p > code, li > code,
+.codespan {
+  font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code",
+               Menlo, Consolas, monospace !important;
+  font-size: 0.88em !important;
+  padding: 2px 6px !important;
+  border-radius: 5px !important;
+  background: var(--color-gray-800, oklch(0.28 0.018 270)) !important;
+  border: 1px solid var(--color-gray-700, oklch(0.40 0.016 270)) !important;
+  font-weight: 500 !important;
+  color: var(--color-gray-100, oklch(0.955 0.005 270)) !important;
+}
 
-  /* Copy button */
-  :where(.codeblock-copy, .copy-code-button, button[class*="copy"]) {
-    border-radius: var(--radius-xs);
-    padding: 4px 10px;
-    font-size: 12px;
-    transition: background var(--t-base);
-    background: rgba(255,255,255,.06);
-    border: 1px solid var(--line-2);
-  }
-  :where(.codeblock-copy:hover, .copy-code-button:hover) {
-    background: rgba(255,255,255,.12);
-  }
+/* === CODE BLOCKS === */
+pre,
+.markdown pre,
+.markdown-prose pre,
+.input-prose pre,
+.message-content pre,
+.hljs,
+pre > code {
+  font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code",
+               Menlo, Consolas, monospace !important;
+  font-size: 13.5px !important;
+  line-height: 1.6 !important;
+  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  margin: 1em 0 !important;
+  background: #1a1b26 !important;
+  border: 1px solid oklch(0.40 0.016 270 / 0.5) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  overflow-x: auto;
+  tab-size: 2;
+}
 
-  /* Syntax tokens — Tokyo Night */
-  :where(.hljs-keyword, .token.keyword)       { color: #bb9af7; }
-  :where(.hljs-string,  .token.string)        { color: #9ece6a; }
-  :where(.hljs-number,  .token.number)        { color: #ff9e64; }
-  :where(.hljs-comment, .token.comment)       { color: #565f89; font-style: italic; }
-  :where(.hljs-function,.token.function)      { color: #7aa2f7; }
-  :where(.hljs-variable,.token.variable,
-         .hljs-name,     .token.variable)     { color: #c0caf5; }
-  :where(.hljs-built_in,.token.builtin)       { color: #7dcfff; }
-  :where(.hljs-type,     .token.class-name)   { color: #2ac3de; }
-  :where(.hljs-tag,      .token.tag)          { color: #f7768e; }
-  :where(.hljs-attr,     .token.attr-name)    { color: #73daca; }
-  :where(.hljs-operator, .token.operator,
-         .hljs-punctuation, .token.punctuation) { color: #89ddff; }
-  :where(.hljs-property, .token.property)     { color: #73daca; }
-  :where(.hljs-title,    .token.title)        { color: #7aa2f7; }
+pre code, .hljs code, pre > code {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  color: #c0caf5 !important;
+  display: block;
+  white-space: pre;
+}
 
-/* =====================================================================
-   5. ARTIFACT CARDS — Claude-style with left rail + header
-   ===================================================================== */
-/* @layer polish.artifact { */
-  :where(.artifact, .claude-artifact,
-         .markdown .artifact, .md .artifact, .prose .artifact,
-         [class*="markdown"] .artifact,
-         .message-content .artifact) {
-    display: block;
-    margin: 1.4em 0;
-    padding: 0;
-    border-radius: var(--radius-md);
-    background: var(--surface-1);
-    border: 1px solid var(--line-2);
-    border-left: 3px solid var(--accent);
-    box-shadow: var(--shadow-1);
-    overflow: hidden;
-    position: relative;
-  }
-  :where(.artifact::before, .claude-artifact::before,
-         .markdown .artifact::before, .md .artifact::before,
-         .prose .artifact::before,
-         [class*="markdown"] .artifact::before,
-         .message-content .artifact::before) {
-    content: "ARTIFACT";
-    display: block;
-    padding: 8px 18px;
-    background: var(--accent-soft);
-    border-bottom: 1px solid rgba(99,102,241,.2);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .08em;
-    color: #a5b4fc;
-  }
-  :where(.artifact > pre, .artifact > div,
-         .claude-artifact > pre, .claude-artifact > div) {
-    border-radius: 0;
-    margin: 0;
-    border: 0;
-    box-shadow: none;
-  }
-  /* Fallback */
-  .artifact {
-    border-left: 3px solid var(--accent);
-    background: var(--surface-1);
-    border-radius: var(--radius-md);
-  }
+/* Tokyo Night syntax tokens — overrides OWUI's hljs colors */
+.hljs-comment, .hljs-quote           { color: #565f89 !important; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag,
+.hljs-literal, .hljs-section,
+.hljs-link                                { color: #bb9af7 !important; }
+.hljs-string, .hljs-symbol,
+.hljs-bullet, .hljs-meta-string,
+.hljs-addition                            { color: #9ece6a !important; }
+.hljs-number, .hljs-meta,
+.hljs-built_in, .hljs-builtin-name,
+.hljs-type, .hljs-params                  { color: #ff9e64 !important; }
+.hljs-function, .hljs-title,
+.hljs-class .hljs-title,
+.hljs-attr                                { color: #7aa2f7 !important; }
+.hljs-variable, .hljs-template-variable,
+.hljs-name, .hljs-selector-id,
+.hljs-selector-class                     { color: #c0caf5 !important; }
+.hljs-tag                                  { color: #f7768e !important; }
+.hljs-attr-name                           { color: #73daca !important; }
+.hljs-operator, .hljs-punctuation        { color: #89ddff !important; }
+.hljs-property                            { color: #73daca !important; }
+.hljs-regexp                              { color: #f7768e !important; }
+.hljs-deletion                            { color: #f7768e !important; background: oklch(0.65 0.20 25 / 0.15); }
+.hljs-emphasis                           { font-style: italic; }
+.hljs-strong                             { font-weight: 700; }
 
-/* =====================================================================
-   6. MESSAGE BUBBLES
-   ===================================================================== */
-/* @layer polish.messages { */
-  :where(.message-bubble, .chat-message, [class*="message-"]) {
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-1);
-    padding: 18px 22px;
-    margin-bottom: 14px;
-    transition: box-shadow var(--t-base);
-    animation: fadeUp var(--t-slow);
-  }
-  :where(.message-bubble:hover, .chat-message:hover) {
-    box-shadow: var(--shadow-2);
+/* Code block copy button (OWUI renders this) */
+.codeblock-copy,
+.copy-code-button,
+button[class*="copy"] {
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+  font-size: 12px !important;
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid oklch(0.40 0.016 270) !important;
+  color: var(--color-gray-300, oklch(0.85 0.008 270)) !important;
+  transition: background 0.15s;
+}
+.codeblock-copy:hover,
+.copy-code-button:hover {
+  background: rgba(255,255,255,.12) !important;
+}
+
+/* === INPUTS & TEXTAREAS === */
+textarea,
+input[type="text"],
+input[type="search"],
+input:not([type]),
+.chat-input {
+  font-family: inherit !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+/* Chat input pill — OWUI uses bg-gray-900 dark:bg-gray-950 on the wrapper */
+[class*="chat-input"],
+.chat-input-container {
+  border-radius: 22px !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+[class*="chat-input"]:focus-within,
+.chat-input-container:focus-within {
+  border-color: oklch(0.58 0.22 268 / 0.6) !important;
+  box-shadow: 0 0 0 4px oklch(0.58 0.22 268 / 0.12) !important;
+}
+
+/* === BUTTONS === */
+button.btn,
+button[class*="btn-primary"],
+.btn-primary,
+button[class*="bg-blue-600"],
+button[class*="bg-blue-500"] {
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.12s !important;
+}
+button.btn:hover,
+.btn-primary:hover,
+button[class*="bg-blue-600"]:hover,
+button[class*="bg-blue-500"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px oklch(0.58 0.22 268 / 0.3);
+}
+
+/* === PROSEMIRROR (rich text input) === */
+.ProseMirror {
+  font-family: inherit !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+.ProseMirror:focus {
+  outline: none;
+}
+
+/* === ANIMATIONS === */
+@media (prefers-reduced-motion: no-preference) {
+  .message,
+  [class*="message-"] {
+    animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    :where(.message-bubble, .chat-message) {
-      animation: none;
-    }
-  }
+}
 
-/* =====================================================================
-   7. CHAT INPUT
-   ===================================================================== */
-/* @layer polish.input { */
-  :where(.chat-input, [class*="chat-input"]) {
-    border-radius: var(--radius-xl);
-    padding: 6px 8px;
-    box-shadow: var(--shadow-2);
-    background: var(--surface-1);
-    border: 1px solid var(--line-1);
-    transition: box-shadow var(--t-base), border-color var(--t-base);
-  }
-  :where(.chat-input:focus-within,
-         [class*="chat-input"]:focus-within) {
-    border-color: rgba(99,102,241,.45);
-    box-shadow: 0 0 0 4px rgba(99,102,241,.12), var(--shadow-2);
-  }
-  :where(.chat-input textarea,
-         textarea[class*="input"],
-         textarea[id*="chat"], textarea[placeholder*="message" i]) {
-    border: 0 !important;
-    background: transparent !important;
-    border-radius: var(--radius-lg);
-    padding: 14px 18px;
-    font-family: var(--font-sans);
-    font-size: 15.5px;
-    line-height: 1.6;
-    resize: none;
-    outline: 0;
-    box-shadow: none;
-    color: inherit;
-  }
-  /* Fallback textarea */
-  textarea {
-    font-family: var(--font-sans);
-  }
+/* === ARTIFACT CARDS === */
+/* Use .artifact or .claude-artifact class in markdown */
+.artifact,
+.claude-artifact {
+  display: block;
+  margin: 1.2em 0;
+  padding: 0;
+  border-radius: 12px;
+  background: oklch(0.22 0.020 270 / 0.5);
+  border: 1px solid oklch(0.40 0.016 270);
+  border-left: 3px solid oklch(0.65 0.20 268);
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  overflow: hidden;
+  position: relative;
+}
+.artifact::before,
+.claude-artifact::before {
+  content: "ARTIFACT";
+  display: block;
+  padding: 8px 18px;
+  background: oklch(0.58 0.22 268 / 0.12);
+  border-bottom: 1px solid oklch(0.58 0.22 268 / 0.2);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: oklch(0.78 0.14 268);
+}
+.artifact > pre,
+.claude-artifact > pre,
+.artifact > div,
+.claude-artifact > div {
+  border-radius: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
 
-/* =====================================================================
-   8. SIDEBAR
-   ===================================================================== */
-/* @layer polish.sidebar { */
-  :where(.sidebar, [class*="sidebar"]) {
-    background: var(--surface-1);
-    border-right: 1px solid var(--line-1);
-  }
-  :where(.sidebar-item, .chat-list-item,
-         [class*="chat-item"], [class*="sidebar-item"]) {
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    margin-bottom: 3px;
-    transition: background var(--t-base), transform var(--t-base);
-  }
-  :where(.sidebar-item:hover, .chat-list-item:hover,
-         [class*="chat-item"]:hover,
-         [class*="sidebar-item"]:hover) {
-    background: var(--surface-2);
-    transform: translateX(2px);
-  }
-  :where(.sidebar-item.active, .chat-list-item.active,
-         [class*="chat-item"].active,
-         [class*="sidebar-item"].active) {
-    background: var(--accent-soft);
-    font-weight: 500;
-  }
-
-/* =====================================================================
-   9. BUTTONS
-   ===================================================================== */
-/* @layer polish.buttons { */
-  :where(button.btn, button[class*="btn"], .btn, button[class*="button"]) {
-    border-radius: var(--radius-md);
-    padding: 9px 18px;
-    font-weight: 500;
-    letter-spacing: -.005em;
-    transition: transform var(--t-base), box-shadow var(--t-base),
-                background var(--t-base);
-    border: 1px solid transparent;
-  }
-  :where(button.btn:hover, .btn:hover, button[class*="btn"]:hover,
-         button[class*="button"]:hover) {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-2);
-  }
-  :where(button.btn-primary, .btn-primary, button.primary) {
-    background: var(--accent);
-    color: #fff;
-  }
-  :where(button.btn-primary:hover, .btn-primary:hover, button.primary:hover) {
-    background: var(--accent-hover);
-  }
-
-/* =====================================================================
-   10. SCROLLBAR (Webkit + Firefox fallback)
-   ===================================================================== */
-/* @layer polish.scrollbar { */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(127,127,127,.25) transparent;
-  }
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(127,127,127,.25);
-    border-radius: 10px;
-    transition: background var(--t-base);
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(127,127,127,.45);
-  }
-
-/* =====================================================================
-   11. SELECTION + MISC
-   ===================================================================== */
-/* @layer polish.misc { */
-  ::selection {
-    background: rgba(99,102,241,.35);
-    color: inherit;
-  }
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-    border-radius: var(--radius-xs);
-  }
-
-/* =====================================================================
-   12. SAFETY NET — kill any rule that breaks our typography
-   Uses !important last-resort only for code/typography correctness
-   ===================================================================== */
-/* @layer polish.safety { */
-  pre code,
-  pre code *,
-  .hljs, .hljs * { font-family: var(--font-mono) !important; }
-  .markdown, .md, .prose, .message-content,
-  [class*="markdown"], [class*="prose"] { font-family: var(--font-sans) !important; }
-  h1, h2, h3, h4 { font-family: var(--font-serif) !important; }
+/* === HIGH CONTRAST / FOCUS === */
+:focus-visible {
+  outline: 2px solid oklch(0.65 0.20 268);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
