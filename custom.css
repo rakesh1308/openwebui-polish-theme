@@ -1,279 +1,266 @@
 /* ================================================================
-   POLISH THEME for Open WebUI — basic version
-   Targets OWUI's Tailwind v4 tokens + a few real class names.
-   Keep it simple. Less is more.
+   POLISH THEME for Open WebUI
+   Pure typography, spacing, and motion polish.
+   No color overrides — only fonts, rhythm, and feel.
    ================================================================ */
 
-/* --- 1. Lift the dark grays so UI is visibly gray, not black --- */
-:root,
-:root.dark,
-html.dark,
-.dark {
-  --color-gray-800: oklch(0.355 0.018 250);
-  --color-gray-850: oklch(0.305 0.020 250);
-  --color-gray-900: oklch(0.255 0.022 250);
-  --color-gray-950: oklch(0.205 0.024 250);
+/* === TYPOGRAPHY ===
+   Use Inter everywhere (already loaded by OWUI).
+   Generous letter-spacing and line-height for readability. */
 
-  --color-blue-500: oklch(0.65 0.20 268);
-  --color-blue-600: oklch(0.57 0.22 268);
-  --color-blue-700: oklch(0.49 0.22 268);
+html, body, pre, .ProseMirror, textarea, input, button {
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- 2. Sidebar: lift from pure black to visible dark gray --- */
-#sidebar {
-  background: oklch(0.215 0.024 250) !important;
-  border-right: 1px solid oklch(0.310 0.020 250) !important;
+/* === MARKDOWN PROSE — Claude-style reading experience === */
+.markdown,
+.markdown-prose,
+.input-prose,
+.message-content,
+[class*="markdown"] {
+  font-size: 16px !important;
+  line-height: 1.75 !important;
+  letter-spacing: -0.003em;
+  word-spacing: 0.015em;
 }
 
-#sidebar-chat-item {
-  border-radius: 10px !important;
-  transition: background 0.15s ease, transform 0.15s ease !important;
-}
-#sidebar-chat-item:hover {
-  background: oklch(0.310 0.020 250) !important;
-  transform: translateX(2px);
-}
-#sidebar-chat-item.selected,
-#sidebar-chat-item.active {
-  background: oklch(0.57 0.22 268 / 0.20) !important;
+/* Paragraphs — generous breathing room */
+.markdown p, .markdown-prose p, .input-prose p, .message-content p {
+  margin: 0 0 1.1em 0 !important;
 }
 
-/* --- 3. Chat input: refined pill with focus glow --- */
-[class*="chat-input"],
-.chat-input-container,
-[class*="chat-input-wrapper"],
-[id*="chat-input"] {
-  border-radius: 22px !important;
-  border: 1px solid oklch(0.360 0.018 250) !important;
-  background: oklch(0.265 0.022 250) !important;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+/* Headings — use serif (Source Serif Pro) like Claude.ai */
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5,
+.markdown-prose h1, .markdown-prose h2, .markdown-prose h3, .markdown-prose h4,
+.input-prose h1, .input-prose h2, .input-prose h3, .input-prose h4,
+.message-content h1, .message-content h2, .message-content h3, .message-content h4 {
+  font-family: "Source Serif Pro", "Iowan Old Style", "Apple Garamond",
+                "Charter", Baskerville, "Times New Roman", serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.25 !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
 }
-[class*="chat-input"]:focus-within {
-  border-color: var(--color-blue-500) !important;
-  box-shadow: 0 0 0 3px oklch(0.65 0.20 268 / 0.18) !important;
+.markdown h1, .markdown-prose h1, .input-prose h1, .message-content h1 {
+  font-size: 1.85rem !important;
+}
+.markdown h2, .markdown-prose h2, .input-prose h2, .message-content h2 {
+  font-size: 1.5rem !important;
+}
+.markdown h3, .markdown-prose h3, .input-prose h3, .message-content h3 {
+  font-size: 1.25rem !important;
 }
 
-textarea,
-textarea[id*="chat"],
-textarea[placeholder*="message" i] {
+/* Strong */
+.markdown strong, .markdown-prose strong, .input-prose strong,
+.message-content strong {
+  font-weight: 600;
+}
+
+/* Links — subtle, with hover lift */
+.markdown a, .markdown-prose a, .input-prose a, .message-content a {
+  text-decoration: none !important;
+  border-bottom: 1px solid currentColor;
+  opacity: 0.85;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+.markdown a:hover, .markdown-prose a:hover, .input-prose a:hover,
+.message-content a:hover {
+  opacity: 1;
+  background: rgba(99,102,241,0.10);
+  border-radius: 3px;
+  padding: 0 2px;
+  margin: 0 -2px;
+}
+
+/* Lists */
+.markdown ul, .markdown ol,
+.markdown-prose ul, .markdown-prose ol,
+.input-prose ul, .input-prose ol,
+.message-content ul, .message-content ol {
+  padding-left: 1.5em !important;
+  margin: 0.6em 0 1.2em 0 !important;
+}
+.markdown li, .markdown-prose li, .input-prose li,
+.message-content li {
+  margin: 0.35em 0 !important;
+  line-height: 1.75 !important;
+}
+
+/* Blockquote */
+.markdown blockquote, .markdown-prose blockquote,
+.input-prose blockquote, .message-content blockquote, blockquote {
+  border-left: 3px solid currentColor !important;
+  padding: 8px 18px !important;
+  margin: 1.2em 0 !important;
+  border-radius: 0 8px 8px 0 !important;
+  font-style: italic !important;
+  opacity: 0.85;
+}
+
+/* Inline code — use mono with proper pill */
+.markdown code:not(pre code), .markdown-prose code:not(pre code),
+.input-prose code:not(pre code), .message-content code:not(pre code),
+.codespan, p > code, li > code {
+  font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code",
+               Menlo, Consolas, monospace !important;
+  font-size: 0.875em !important;
+  padding: 2px 7px !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+}
+
+/* === CODE BLOCKS — Claude-style rounded code with breathing room === */
+pre,
+.markdown pre, .markdown-prose pre, .input-prose pre,
+.message-content pre, .hljs, pre > code {
+  font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code",
+               Menlo, Consolas, monospace !important;
+  font-size: 13.5px !important;
+  line-height: 1.7 !important;
+  border-radius: 12px !important;
+  padding: 18px 22px !important;
+  margin: 1.2em 0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+  overflow-x: auto !important;
+  tab-size: 2 !important;
+}
+pre code, .hljs code, pre > code {
   background: transparent !important;
   border: 0 !important;
-  padding: 14px 18px !important;
-  resize: none !important;
-  color: var(--color-gray-100) !important;
+  padding: 0 !important;
+  white-space: pre !important;
 }
-textarea:focus { outline: none !important; }
+.hljs { border-radius: 12px !important; }
 
-/* --- 4. Send button (OWUI uses literal bg-black for active state) --- */
-#send-message-button,
-button[aria-label*="Send" i],
-button[type="submit"] {
-  border-radius: 9999px !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
-}
-#send-message-button.bg-black,
-button[aria-label*="Send" i].bg-black {
-  background: var(--color-blue-600) !important;
-  color: white !important;
-}
-#send-message-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px oklch(0.57 0.22 268 / 0.35);
-}
+/* Tokyo Night syntax — readable, not garish */
+.hljs-comment, .hljs-quote           { color: #565f89; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag    { color: #bb9af7; }
+.hljs-string, .hljs-symbol           { color: #9ece6a; }
+.hljs-number, .hljs-built_in,
+.hljs-type, .hljs-literal            { color: #ff9e64; }
+.hljs-function, .hljs-title,
+.hljs-attr                          { color: #7aa2f7; }
+.hljs-variable, .hljs-name           { color: #c0caf5; }
+.hljs-tag                            { color: #f7768e; }
+.hljs-attr-name                      { color: #73daca; }
+.hljs-operator, .hljs-punctuation    { color: #89ddff; }
+.hljs-property                       { color: #73daca; }
+.hljs-deletion                       { color: #f7768e; }
 
-/* --- 5. Tables: lift header from black to dark gray --- */
+/* === TABLES — ChatGPT-style: rounded, subtle border, generous padding === */
 .markdown table, .markdown-prose table, .input-prose table,
 .message-content table, table {
   border-collapse: separate !important;
   border-spacing: 0 !important;
   width: 100% !important;
-  margin: 1.2em 0 !important;
+  margin: 1.4em 0 !important;
   border-radius: 10px !important;
   overflow: hidden !important;
-  border: 1px solid oklch(0.450 0.018 250) !important;
-  font-size: 14px !important;
-}
-.markdown thead, .markdown-prose thead, .input-prose thead,
-.message-content thead, thead {
-  background: oklch(0.310 0.020 250) !important;
+  font-size: 14.5px !important;
 }
 .markdown th, .markdown-prose th, .input-prose th,
 .message-content th, th {
-  background: oklch(0.310 0.020 250) !important;
-  background-color: oklch(0.310 0.020 250) !important;
   font-weight: 600 !important;
   text-align: left !important;
   padding: 12px 16px !important;
-  color: var(--color-gray-50) !important;
-  border-bottom: 2px solid var(--color-blue-500) !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  font-family: inherit !important;
 }
 .markdown td, .markdown-prose td, .input-prose td,
 .message-content td, td {
-  padding: 10px 16px !important;
-  border-bottom: 1px solid oklch(0.360 0.018 250) !important;
-  color: var(--color-gray-200) !important;
+  padding: 12px 16px !important;
 }
 .markdown tbody tr:last-child td { border-bottom: 0 !important; }
-.markdown tbody tr:hover { background: oklch(0.310 0.020 250) !important; }
+.markdown tbody tr, tbody tr {
+  transition: background 0.15s ease;
+}
 
-/* --- 6. Code blocks: Tokyo Night palette --- */
-pre, .markdown pre, .markdown-prose pre, .input-prose pre,
-.message-content pre, .hljs {
-  font-family: "JetBrains Mono", "Fira Code", monospace !important;
-  font-size: 13.5px !important;
-  line-height: 1.6 !important;
-  border-radius: 12px !important;
+/* === SPACING — generous padding everywhere === */
+/* Sidebar items — bigger touch targets */
+#sidebar-chat-item {
+  padding-block: 8px !important;
+  border-radius: 10px !important;
+}
+
+/* Chat input — comfortable padding */
+textarea,
+textarea[id*="chat"],
+textarea[placeholder*="message" i] {
   padding: 16px 20px !important;
-  margin: 1em 0 !important;
-  background: #1a1b26 !important;
-  border: 1px solid oklch(0.450 0.018 250 / 0.5) !important;
-  overflow-x: auto !important;
-}
-pre code, .hljs code {
-  background: transparent !important;
-  color: #c0caf5 !important;
-  white-space: pre !important;
-}
-.hljs-comment, .hljs-quote           { color: #565f89 !important; }
-.hljs-keyword, .hljs-selector-tag    { color: #bb9af7 !important; }
-.hljs-string, .hljs-symbol           { color: #9ece6a !important; }
-.hljs-number, .hljs-built_in,
-.hljs-type, .hljs-literal            { color: #ff9e64 !important; }
-.hljs-function, .hljs-title,
-.hljs-attr                          { color: #7aa2f7 !important; }
-.hljs-variable, .hljs-name           { color: #c0caf5 !important; }
-.hljs-tag                            { color: #f7768e !important; }
-.hljs-attr-name                      { color: #73daca !important; }
-.hljs-operator, .hljs-punctuation    { color: #89ddff !important; }
-.hljs-property                       { color: #73daca !important; }
-
-/* --- 7. Inline code --- */
-.markdown code:not(pre code), .markdown-prose code:not(pre code),
-.input-prose code:not(pre code), .message-content code:not(pre code),
-.codespan, p > code, li > code {
-  font-family: "JetBrains Mono", monospace !important;
-  font-size: 0.875em !important;
-  padding: 2px 7px !important;
-  border-radius: 6px !important;
-  background: oklch(0.360 0.018 250) !important;
-  border: 1px solid oklch(0.450 0.018 250) !important;
-  color: var(--color-gray-50) !important;
-}
-
-/* --- 8. Markdown prose: serif headings, generous line-height --- */
-.markdown, .markdown-prose, .input-prose, .message-content {
+  line-height: 1.6 !important;
   font-size: 15.5px !important;
-  line-height: 1.7 !important;
-}
-.markdown h1, .markdown h2, .markdown h3,
-.markdown-prose h1, .markdown-prose h2, .markdown-prose h3,
-.input-prose h1, .input-prose h2, .input-prose h3,
-.message-content h1, .message-content h2, .message-content h3 {
-  font-family: "Source Serif Pro", "Iowan Old Style", serif !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.015em !important;
-  margin-top: 1.4em !important;
-  margin-bottom: 0.5em !important;
-  color: var(--color-gray-50) !important;
-}
-.markdown a, .markdown-prose a, .input-prose a, .message-content a {
-  color: var(--color-blue-400) !important;
-  text-decoration: none !important;
-  border-bottom: 1px solid oklch(0.72 0.16 268 / 0.4);
-}
-.markdown a:hover {
-  background: oklch(0.57 0.22 268 / 0.12);
-  border-radius: 3px;
-}
-.markdown blockquote,
-.input-prose blockquote,
-.message-content blockquote {
-  border-left: 3px solid var(--color-blue-500) !important;
-  background: oklch(0.57 0.22 268 / 0.10) !important;
-  padding: 10px 18px !important;
-  margin: 1.2em 0 !important;
-  border-radius: 0 8px 8px 0 !important;
-  font-style: italic !important;
-  color: var(--color-gray-300) !important;
 }
 
-/* --- 9. Modals --- */
-.modal-box,
-[role="dialog"] > div,
-[class*="modal"] {
-  border-radius: 16px !important;
-  background: oklch(0.265 0.022 250) !important;
-  box-shadow: 0 10px 40px rgba(0,0,0,.3) !important;
-  border: 1px solid oklch(0.360 0.018 250) !important;
-}
-[class*="modal-header"],
-.modal-box > div:first-child,
-[role="dialog"] > div > div:first-child {
-  background: oklch(0.310 0.020 250) !important;
-  border-bottom: 1px solid oklch(0.360 0.018 250) !important;
-  padding: 14px 20px !important;
-  border-radius: 16px 16px 0 0 !important;
-}
-
-/* --- 10. Dropdowns --- */
-[class*="dropdown"],
-[role="menu"] {
-  border-radius: 12px !important;
-  background: oklch(0.310 0.020 250) !important;
-  border: 1px solid oklch(0.450 0.018 250) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,.3) !important;
-  padding: 4px !important;
-}
-[role="menuitem"]:hover {
-  background: oklch(0.57 0.22 268 / 0.18) !important;
-}
-
-/* --- 11. Inputs --- */
+/* Inputs — comfortable padding */
 input[type="text"], input[type="search"], input[type="email"],
 input[type="password"], input[type="url"], input:not([type]),
-textarea {
+textarea, select {
+  padding: 11px 14px !important;
   border-radius: 10px !important;
-  background: oklch(0.265 0.022 250) !important;
-  border: 1px solid oklch(0.450 0.018 250) !important;
-  padding: 10px 14px !important;
-  color: var(--color-gray-100) !important;
-}
-input:focus, textarea:focus {
-  outline: none !important;
-  border-color: var(--color-blue-500) !important;
-  box-shadow: 0 0 0 3px oklch(0.65 0.20 268 / 0.15) !important;
 }
 
-/* --- 12. Tooltips --- */
-.tippy-box, .tippy-content, [role="tooltip"] {
-  border-radius: 8px !important;
-  background: oklch(0.360 0.018 250) !important;
-  color: var(--color-gray-50) !important;
-  border: 1px solid oklch(0.450 0.018 250) !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,.35) !important;
+/* === MOTION — smooth, gentle transitions everywhere === */
+button, [role="button"], a, [class*="dropdown"], [role="menuitem"] {
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+              transform 0.15s ease, box-shadow 0.2s ease,
+              opacity 0.15s ease !important;
 }
 
-/* --- 13. Primary action button (OWUI's bg-black pill) --- */
-button.px-3\.5.py-1\.5,
-button[class*="rounded-full"][class*="bg-black"],
-button[class*="rounded-full"].bg-white {
-  background: var(--color-blue-600) !important;
-  color: white !important;
+/* Hover lift on key buttons */
+#send-message-button:hover,
+button.btn-primary:hover {
+  transform: translateY(-1px);
+}
+#send-message-button:active {
+  transform: translateY(0);
 }
 
-/* --- 14. Scrollbar --- */
+/* Sidebar item hover — subtle slide */
+#sidebar-chat-item:hover {
+  transform: translateX(3px);
+}
+
+/* Message entrance — subtle fade up */
+@media (prefers-reduced-motion: no-preference) {
+  [class*="message-"], .message-bubble {
+    animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* === SCROLLBAR — slim and unobtrusive === */
 * {
   scrollbar-width: thin;
-  scrollbar-color: oklch(0.50 0.012 250) transparent;
+  scrollbar-color: rgba(127,127,127,0.3) transparent;
 }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.50 0.012 250);
+  background: rgba(127,127,127,0.3);
   border-radius: 10px;
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(127,127,127,0.5); }
+
+/* === SELECTION === */
+::selection {
+  background: rgba(99,102,241,0.3);
+  color: inherit;
 }
 
-/* --- 15. Selection --- */
-::selection {
-  background: oklch(0.65 0.20 268 / 0.35);
-  color: inherit;
+/* === FOCUS === */
+:focus-visible {
+  outline: 2px solid rgba(99,102,241,0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
