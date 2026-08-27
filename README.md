@@ -14,9 +14,15 @@ A Claude/ChatGPT-inspired dark theme for [Open WebUI](https://github.com/open-we
 
 ## How it works
 
-Open WebUI's official image builds the frontend in a Node stage and ships only `/app/build/*` at runtime — `COPY` into `/app/src/...` is silently lost.
+Open WebUI's `src/app.html` loads `<link rel="stylesheet" href="/static/custom.css">`.
+The backend mounts `/static` from the `STATIC_DIR` (default `/app/backend/open_webui/static`).
 
-Instead, the backend reads the `CUSTOM_CSS` env var and inlines it into every HTML response. We bake the CSS into that env var at image-build time.
+So the Dockerfile just `COPY`s our CSS into that directory:
+
+```dockerfile
+FROM ghcr.io/open-webui/open-webui:main
+COPY custom.css /app/backend/open_webui/static/custom.css
+```
 
 ## Run
 
@@ -31,29 +37,29 @@ No env vars needed — CSS is baked in.
 
 ## Verify it's working
 
-Open <http://localhost:3000>, then F12 → Console, paste:
+Open <http://localhost:3000>, hard refresh (Ctrl+Shift+R), then F12 → Console:
 
 ```javascript
-getComputedStyle(document.documentElement).getPropertyValue('--accent')
-```
+fetch('/static/custom.css').then(r => r.status)
+// → 200
 
-Should return: `#6366f1`
+getComputedStyle(document.documentElement).getPropertyValue('--accent')
+// → "#6366f1"
+```
 
 ## Files
 
 | File | Purpose |
 |---|---|
 | `custom.css` | The theme — edit this |
-| `template.Dockerfile` | Template with CSS placeholder |
-| `build.sh` | Generates `Dockerfile` from template + CSS |
-| `Dockerfile` | **Auto-generated**, do not edit |
-| `.github/workflows/build.yml` | GH Actions — runs `build.sh` then builds image |
+| `Dockerfile` | Layers CSS onto the official image |
+| `.github/workflows/build.yml` | GH Actions — builds & pushes image |
+| `README.md` | This file |
 
 ## Editing the theme
 
 1. Edit `custom.css`
-2. Run `bash build.sh` locally to regenerate `Dockerfile`
-3. Commit both — Actions rebuilds & pushes the image
+2. Commit & push — Actions rebuilds & publishes the image in ~2 min
 
 ## Custom accent color
 
