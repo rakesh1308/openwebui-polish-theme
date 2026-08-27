@@ -1,0 +1,62 @@
+/* === POLISH THEME === */
+:root {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-soft: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
+  --transition: all 0.2s ease;
+}
+
+.message-bubble, .chat-message {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-soft) !important;
+  padding: 16px 20px !important;
+  margin-bottom: 12px !important;
+}
+
+.chat-input textarea {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  padding: 14px 18px !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+.sidebar-item, .chat-list-item {
+  border-radius: var(--radius-sm) !important;
+  padding: 10px 12px !important;
+  margin-bottom: 4px !important;
+}
+
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.05) !important;
+}
+
+.sidebar-item.active {
+  background: rgba(99, 102, 241, 0.12) !important;
+}
+
+button.btn {
+  border-radius: var(--radius-md) !important;
+  padding: 8px 16px !important;
+  transition: var(--transition) !important;
+}
+
+::-webkit-scrollbar { width: 6px !important; }
+::-webkit-scrollbar-track { background: transparent !important; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1) !important;
+  border-radius: 10px !important;
+}
+
+pre code {
+  border-radius: var(--radius-md) !important;
+  padding: 14px 16px !important;
+  font-size: 13.5px !important;
+}
+
+.prose, .message-content {
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+}
