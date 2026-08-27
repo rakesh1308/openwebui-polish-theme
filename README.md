@@ -15,14 +15,15 @@ A Claude/ChatGPT-inspired dark theme for [Open WebUI](https://github.com/open-we
 ## How it works
 
 Open WebUI's `src/app.html` loads `<link rel="stylesheet" href="/static/custom.css">`.
-The backend mounts `/static` from the `STATIC_DIR` (default `/app/backend/open_webui/static`).
+The backend mounts `/static` from `STATIC_DIR` (default `/app/backend/open_webui/static`).
 
-So the Dockerfile just `COPY`s our CSS into that directory:
+**The catch**: OWUI's `backend/open_webui/config.py` runs on startup and **deletes every file in `STATIC_DIR`**, then rebuilds from `/app/build/static/`. So a plain `COPY` into `STATIC_DIR` is wiped before any request is served.
 
-```dockerfile
-FROM ghcr.io/open-webui/open-webui:main
-COPY custom.css /app/backend/open_webui/static/custom.css
-```
+The fix: a small `start-polish.sh` wrapper that:
+1. Drops our CSS into `/app/polish-theme/custom.css` (a directory OWUI doesn't touch)
+2. Launches OWUI's normal `start.sh` in the background
+3. Polls for the uvicorn port to come up (which means OWUI's wipe is done)
+4. Re-copies our CSS into `STATIC_DIR/custom.css` and waits for OWUI to exit
 
 ## Run
 
