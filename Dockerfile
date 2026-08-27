@@ -1,2 +1,591 @@
+# Auto-generated from template.Dockerfile by build.sh — do not edit.
+# Regenerate with: ./build.sh
+
+# Template Dockerfile — DO NOT use directly. build.sh generates
+# the real Dockerfile from this template by inlining custom.css
+# into the CUSTOM_CSS env var.
+
 FROM ghcr.io/open-webui/open-webui:main
-COPY custom.css /app/src/lib/assets/css/custom.css
+
+# CUSTOM_CSS is read by Open WebUI's backend at runtime and inlined
+# into every HTML response. We bake it into the image so users
+# don't need to pass any env vars.
+ENV CUSTOM_CSS=/* =====================================================================
+   POLISH THEME — BULLETPROOF
+   Designed to work across Open WebUI versions (pre-0.5 → 0.6+)
+   Self-healing, layered, zero-conflict CSS.
+   ===================================================================== */
+
+/* =====================================================================
+   1. DESIGN TOKENS — single source of truth
+   ===================================================================== */
+@layer polish.tokens {
+  :where(:root, .dark, .light, [data-theme]) {
+    /* Radii */
+    --radius-xs: 6px;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+
+    /* Shadows */
+    --shadow-1: 0 1px 2px rgba(0,0,0,.04), 0 1px 3px rgba(0,0,0,.06);
+    --shadow-2: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+    --shadow-3: 0 12px 32px rgba(0,0,0,.14), 0 4px 10px rgba(0,0,0,.06);
+
+    /* Motion */
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+    --t-fast: 120ms var(--ease-out);
+    --t-base: 200ms var(--ease-out);
+    --t-slow: 360ms var(--ease-out);
+
+    /* Palette */
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-soft: rgba(99,102,241,.14);
+    --accent-line: rgba(99,102,241,.35);
+    --ink-1: rgba(255,255,255,.95);
+    --ink-2: rgba(255,255,255,.78);
+    --ink-3: rgba(255,255,255,.55);
+    --ink-mute: rgba(255,255,255,.35);
+    --surface-1: rgba(255,255,255,.025);
+    --surface-2: rgba(255,255,255,.045);
+    --surface-3: rgba(255,255,255,.075);
+    --line-1: rgba(255,255,255,.06);
+    --line-2: rgba(255,255,255,.12);
+    --code-bg: #1a1b26;
+
+    /* Typography */
+    --font-sans: "Inter","SF Pro Display",-apple-system,BlinkMacSystemFont,
+                 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-serif: "Source Serif Pro","Iowan Old Style","Apple Garamond",
+                  Baskerville,"Times New Roman",serif;
+    --font-mono: "JetBrains Mono","Fira Code","SF Mono","Cascadia Code",
+                 Menlo,Consolas,monospace;
+  }
+}
+
+/* Light-mode overrides (auto-switch when OWUI uses a light theme) */
+@layer polish.tokens {
+  :where(.light, [data-theme="light"]) {
+    --ink-1: rgba(15,18,28,.95);
+    --ink-2: rgba(15,18,28,.78);
+    --ink-3: rgba(15,18,28,.55);
+    --ink-mute: rgba(15,18,28,.35);
+    --surface-1: rgba(15,18,28,.02);
+    --surface-2: rgba(15,18,28,.04);
+    --surface-3: rgba(15,18,28,.07);
+    --line-1: rgba(15,18,28,.08);
+    --line-2: rgba(15,18,28,.15);
+    --code-bg: #f6f7fb;
+  }
+}
+
+/* =====================================================================
+   2. GLOBAL BASE — typographic __CUSTOM_CSS_PLACEHOLDER__ smoothing
+   ===================================================================== */
+@layer polish.base {
+  :where(html, body, .app, #app, .chat-container, .message, .prose) {
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02","cv03","cv04","cv11","ss01";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  :where(*, *::before, *::after) {
+    box-sizing: border-box;
+  }
+}
+
+/* =====================================================================
+   3. TYPOGRAPHY — headings + prose
+   Targets every known markdown container.
+   ===================================================================== */
+@layer polish.type {
+  :where(h1, h2, h3, h4, h5, h6,
+         .markdown :where(h1, h2, h3, h4),
+         .md :where(h1, h2, h3, h4),
+         .prose :where(h1, h2, h3, h4),
+         [class*="markdown"] :where(h1, h2, h3, h4),
+         [class*="prose"] :where(h1, h2, h3, h4),
+         .message-content :where(h1, h2, h3, h4)) {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -.015em;
+    line-height: 1.25;
+    margin-top: 1.6em;
+    margin-bottom: .55em;
+    color: var(--ink-1);
+  }
+  :where(.markdown :where(h1), .md :where(h1), .prose :where(h1),
+         [class*="markdown"] :where(h1), [class*="prose"] :where(h1),
+         .message-content :where(h1)) { font-size: 2rem; }
+  :where(.markdown :where(h2), .md :where(h2), .prose :where(h2),
+         [class*="markdown"] :where(h2), [class*="prose"] :where(h2),
+         .message-content :where(h2)) { font-size: 1.6rem; }
+  :where(.markdown :where(h3), .md :where(h3), .prose :where(h3),
+         [class*="markdown"] :where(h3), [class*="prose"] :where(h3),
+         .message-content :where(h3)) { font-size: 1.3rem; }
+
+  /* Prose body */
+  :where(.markdown, .md, .prose, [class*="markdown"], [class*="prose"],
+         .message-content) {
+    font-size: 16px;
+    line-height: 1.75;
+    letter-spacing: -.003em;
+    word-spacing: .02em;
+    color: var(--ink-1);
+  }
+  :where(.markdown p, .md p, .prose p,
+         [class*="markdown"] p, [class*="prose"] p,
+         .message-content p) {
+    margin: 0 0 1.05em 0;
+  }
+  :where(.markdown strong, .md strong, .prose strong,
+         [class*="markdown"] strong, [class*="prose"] strong,
+         .message-content strong) {
+    font-weight: 600;
+    color: var(--ink-1);
+  }
+
+  /* Lists */
+  :where(.markdown :where(ul, ol), .md :where(ul, ol), .prose :where(ul, ol),
+         [class*="markdown"] :where(ul, ol),
+         [class*="prose"] :where(ul, ol),
+         .message-content :where(ul, ol)) {
+    padding-left: 1.5em;
+    margin: .8em 0 1.2em 0;
+  }
+  :where(.markdown li, .md li, .prose li,
+         [class*="markdown"] li, [class*="prose"] li,
+         .message-content li) {
+    margin: .35em 0;
+    line-height: 1.7;
+  }
+  :where(.markdown li::marker, .md li::marker, .prose li::marker,
+         .message-content li::marker) { color: var(--ink-mute); }
+
+  /* Links */
+  :where(.markdown a, .md a, .prose a,
+         [class*="markdown"] a, [class*="prose"] a,
+         .message-content a) {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-line);
+    transition: background var(--t-base), border-color var(--t-base);
+  }
+  :where(.markdown a:hover, .md a:hover, .prose a:hover,
+         [class*="markdown"] a:hover, [class*="prose"] a:hover,
+         .message-content a:hover) {
+    background: var(--accent-soft);
+    border-bottom-color: var(--accent);
+    border-radius: 3px;
+    padding: 0 2px;
+    margin: 0 -2px;
+  }
+
+  /* Inline code */
+  :where(.markdown :where(code):not(pre code),
+         .md :where(code):not(pre code),
+         .prose :where(code):not(pre code),
+         [class*="markdown"] :where(code):not(pre code),
+         [class*="prose"] :where(code):not(pre code),
+         .message-content :where(code):not(pre code),
+         p > code, li > code) {
+    font-family: var(--font-mono);
+    font-size: .88em;
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+    background: var(--surface-3);
+    border: 1px solid var(--line-2);
+    font-weight: 500;
+  }
+
+  /* Blockquote */
+  :where(.markdown blockquote, .md blockquote, .prose blockquote,
+         [class*="markdown"] blockquote, [class*="prose"] blockquote,
+         .message-content blockquote, blockquote) {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 12px 18px;
+    margin: 1.2em 0;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-style: italic;
+    color: var(--ink-2);
+  }
+
+  /* Tables */
+  :where(.markdown table, .md table, .prose table,
+         [class*="markdown"] table, [class*="prose"] table,
+         .message-content table, table) {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin: 1.4em 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
+    font-size: 14.5px;
+    border: 1px solid var(--line-1);
+  }
+  :where(.markdown :where(th, td), .md :where(th, td),
+         .prose :where(th, td),
+         [class*="markdown"] :where(th, td),
+         [class*="prose"] :where(th, td),
+         .message-content :where(th, td), th, td) {
+    padding: 10px 14px;
+  }
+  :where(.markdown th, .md th, .prose th,
+         [class*="markdown"] th, [class*="prose"] th,
+         .message-content th, th) {
+    background: var(--surface-2);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid var(--line-2);
+  }
+  :where(.markdown td, .md td, .prose td,
+         [class*="markdown"] td, [class*="prose"] td,
+         .message-content td, td) {
+    border-bottom: 1px solid var(--line-1);
+  }
+  :where(tbody tr:last-child :where(td)) { border-bottom: 0; }
+  :where(tbody tr:hover) { background: var(--surface-1); }
+
+  /* Horizontal rule */
+  :where(.markdown hr, .md hr, .prose hr,
+         [class*="markdown"] hr, [class*="prose"] hr,
+         .message-content hr, hr) {
+    border: 0;
+    height: 1px;
+    background: var(--line-2);
+    margin: 2em 0;
+  }
+
+  /* Images */
+  :where(.markdown img, .md img, .prose img,
+         [class*="markdown"] img, [class*="prose"] img,
+         .message-content img) {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-2);
+    margin: 1em 0;
+  }
+}
+
+/* =====================================================================
+   4. CODE BLOCKS — Tokyo Night palette + header bar
+   ===================================================================== */
+@layer polish.code {
+  :where(pre,
+         .markdown pre, .md pre, .prose pre,
+         [class*="markdown"] pre, [class*="prose"] pre,
+         .message-content pre,
+         .shiki, .codeblock, .code-block,
+         [class*="codeblock"], [class*="code-block"]) {
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.65;
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    margin: 1.2em 0;
+    background: var(--code-bg);
+    border: 1px solid var(--line-2);
+    box-shadow: var(--shadow-2);
+    overflow-x: auto;
+    tab-size: 2;
+    position: relative;
+  }
+  /* Fallback for browsers without :where pre */
+  pre {
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.65;
+    border-radius: var(--radius-md);
+    background: var(--code-bg);
+    padding: 18px 22px;
+  }
+
+  :where(pre code, .shiki code, .codeblock code) {
+    font-family: var(--font-mono);
+    font-size: inherit;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    color: #c0caf5;
+    display: block;
+    white-space: pre;
+  }
+
+  /* Code block header bar */
+  :where(.codeblock-header, .code-block-header, .codeblock-header-wrapper) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid var(--line-2);
+    border-bottom: 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  :where(.codeblock-header + pre, .code-block-header + pre) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin-top: 0;
+  }
+
+  /* Copy button */
+  :where(.codeblock-copy, .copy-code-button, button[class*="copy"]) {
+    border-radius: var(--radius-xs);
+    padding: 4px 10px;
+    font-size: 12px;
+    transition: background var(--t-base);
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--line-2);
+  }
+  :where(.codeblock-copy:hover, .copy-code-button:hover) {
+    background: rgba(255,255,255,.12);
+  }
+
+  /* Syntax tokens — Tokyo Night */
+  :where(.hljs-keyword, .token.keyword)       { color: #bb9af7; }
+  :where(.hljs-string,  .token.string)        { color: #9ece6a; }
+  :where(.hljs-number,  .token.number)        { color: #ff9e64; }
+  :where(.hljs-comment, .token.comment)       { color: #565f89; font-style: italic; }
+  :where(.hljs-function,.token.function)      { color: #7aa2f7; }
+  :where(.hljs-variable,.token.variable,
+         .hljs-name,     .token.variable)     { color: #c0caf5; }
+  :where(.hljs-built_in,.token.builtin)       { color: #7dcfff; }
+  :where(.hljs-type,     .token.class-name)   { color: #2ac3de; }
+  :where(.hljs-tag,      .token.tag)          { color: #f7768e; }
+  :where(.hljs-attr,     .token.attr-name)    { color: #73daca; }
+  :where(.hljs-operator, .token.operator,
+         .hljs-punctuation, .token.punctuation) { color: #89ddff; }
+  :where(.hljs-property, .token.property)     { color: #73daca; }
+  :where(.hljs-title,    .token.title)        { color: #7aa2f7; }
+}
+
+/* =====================================================================
+   5. ARTIFACT CARDS — Claude-style with left rail + header
+   ===================================================================== */
+@layer polish.artifact {
+  :where(.artifact, .claude-artifact,
+         .markdown .artifact, .md .artifact, .prose .artifact,
+         [class*="markdown"] .artifact,
+         .message-content .artifact) {
+    display: block;
+    margin: 1.4em 0;
+    padding: 0;
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    border: 1px solid var(--line-2);
+    border-left: 3px solid var(--accent);
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+    position: relative;
+  }
+  :where(.artifact::before, .claude-artifact::before,
+         .markdown .artifact::before, .md .artifact::before,
+         .prose .artifact::before,
+         [class*="markdown"] .artifact::before,
+         .message-content .artifact::before) {
+    content: "ARTIFACT";
+    display: block;
+    padding: 8px 18px;
+    background: var(--accent-soft);
+    border-bottom: 1px solid rgba(99,102,241,.2);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    color: #a5b4fc;
+  }
+  :where(.artifact > pre, .artifact > div,
+         .claude-artifact > pre, .claude-artifact > div) {
+    border-radius: 0;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  /* Fallback */
+  .artifact {
+    border-left: 3px solid var(--accent);
+    background: var(--surface-1);
+    border-radius: var(--radius-md);
+  }
+}
+
+/* =====================================================================
+   6. MESSAGE BUBBLES
+   ===================================================================== */
+@layer polish.messages {
+  :where(.message-bubble, .chat-message, [class*="message-"]) {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    transition: box-shadow var(--t-base);
+    animation: fadeUp var(--t-slow);
+  }
+  :where(.message-bubble:hover, .chat-message:hover) {
+    box-shadow: var(--shadow-2);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    :where(.message-bubble, .chat-message) {
+      animation: none;
+    }
+  }
+}
+
+/* =====================================================================
+   7. CHAT INPUT
+   ===================================================================== */
+@layer polish.input {
+  :where(.chat-input, [class*="chat-input"]) {
+    border-radius: var(--radius-xl);
+    padding: 6px 8px;
+    box-shadow: var(--shadow-2);
+    background: var(--surface-1);
+    border: 1px solid var(--line-1);
+    transition: box-shadow var(--t-base), border-color var(--t-base);
+  }
+  :where(.chat-input:focus-within,
+         [class*="chat-input"]:focus-within) {
+    border-color: rgba(99,102,241,.45);
+    box-shadow: 0 0 0 4px rgba(99,102,241,.12), var(--shadow-2);
+  }
+  :where(.chat-input textarea,
+         textarea[class*="input"],
+         textarea[id*="chat"], textarea[placeholder*="message" i]) {
+    border: 0 !important;
+    background: transparent !important;
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    font-family: var(--font-sans);
+    font-size: 15.5px;
+    line-height: 1.6;
+    resize: none;
+    outline: 0;
+    box-shadow: none;
+    color: inherit;
+  }
+  /* Fallback textarea */
+  textarea {
+    font-family: var(--font-sans);
+  }
+}
+
+/* =====================================================================
+   8. SIDEBAR
+   ===================================================================== */
+@layer polish.sidebar {
+  :where(.sidebar, [class*="sidebar"]) {
+    background: var(--surface-1);
+    border-right: 1px solid var(--line-1);
+  }
+  :where(.sidebar-item, .chat-list-item,
+         [class*="chat-item"], [class*="sidebar-item"]) {
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 3px;
+    transition: background var(--t-base), transform var(--t-base);
+  }
+  :where(.sidebar-item:hover, .chat-list-item:hover,
+         [class*="chat-item"]:hover,
+         [class*="sidebar-item"]:hover) {
+    background: var(--surface-2);
+    transform: translateX(2px);
+  }
+  :where(.sidebar-item.active, .chat-list-item.active,
+         [class*="chat-item"].active,
+         [class*="sidebar-item"].active) {
+    background: var(--accent-soft);
+    font-weight: 500;
+  }
+}
+
+/* =====================================================================
+   9. BUTTONS
+   ===================================================================== */
+@layer polish.buttons {
+  :where(button.btn, button[class*="btn"], .btn, button[class*="button"]) {
+    border-radius: var(--radius-md);
+    padding: 9px 18px;
+    font-weight: 500;
+    letter-spacing: -.005em;
+    transition: transform var(--t-base), box-shadow var(--t-base),
+                background var(--t-base);
+    border: 1px solid transparent;
+  }
+  :where(button.btn:hover, .btn:hover, button[class*="btn"]:hover,
+         button[class*="button"]:hover) {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-2);
+  }
+  :where(button.btn-primary, .btn-primary, button.primary) {
+    background: var(--accent);
+    color: #fff;
+  }
+  :where(button.btn-primary:hover, .btn-primary:hover, button.primary:hover) {
+    background: var(--accent-hover);
+  }
+}
+
+/* =====================================================================
+   10. SCROLLBAR (Webkit + Firefox fallback)
+   ===================================================================== */
+@layer polish.scrollbar {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(127,127,127,.25) transparent;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(127,127,127,.25);
+    border-radius: 10px;
+    transition: background var(--t-base);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(127,127,127,.45);
+  }
+}
+
+/* =====================================================================
+   11. SELECTION + MISC
+   ===================================================================== */
+@layer polish.misc {
+  ::selection {
+    background: rgba(99,102,241,.35);
+    color: inherit;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+}
+
+/* =====================================================================
+   12. SAFETY NET — kill any rule that breaks our typography
+   Uses !important last-resort only for code/typography correctness
+   ===================================================================== */
+@layer polish.safety {
+  pre code,
+  pre code *,
+  .hljs, .hljs * { font-family: var(--font-mono) !important; }
+  .markdown, .md, .prose, .message-content,
+  [class*="markdown"], [class*="prose"] { font-family: var(--font-sans) !important; }
+  h1, h2, h3, h4 { font-family: var(--font-serif) !important; }
+}
+

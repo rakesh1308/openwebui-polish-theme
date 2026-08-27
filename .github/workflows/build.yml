@@ -36,6 +36,9 @@ jobs:
             type=raw,value=latest
             type=sha
 
+      - name: Generate Dockerfile from template
+        run: bash build.sh custom.css
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
