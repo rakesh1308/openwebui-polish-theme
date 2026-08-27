@@ -153,8 +153,17 @@ body {
   opacity: 0.85;
   border-left-width: 3px !important;
   padding-left: 1.1em !important;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
   margin: 1.2em 0;
   font-family: inherit;
+  font-size: 0.97em;            /* slightly smaller blockquote, like Claude */
+}
+
+/* Blockquote inner paragraphs - tighten */
+.markdown-prose blockquote p,
+[class*="prose"] blockquote p {
+  margin: 0.4em 0;
 }
 
 /* Horizontal rules - subtle separator */
@@ -171,26 +180,59 @@ body {
    CODE - Anthropic Mono (we use JetBrains Mono as free substitute)
    ============================================================================ */
 
+/* Inline code - slightly larger, easier to read */
 code {
   font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace !important;
-  font-size: 0.875em;
-  padding: 1px 6px;
+  font-size: 0.9em;
+  padding: 1.5px 7px;
   border-radius: 5px;
   font-weight: 500;
   font-feature-settings: 'calt', 'liga';
 }
 
+/* Code blocks - bumped to 14.5px to balance with 16px prose */
+pre,
 pre code,
 pre[class*="language-"] {
   font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
-  font-size: 13.5px;
-  line-height: 1.65;
-  padding: 16px !important;
+  font-size: 14.5px !important;
+  line-height: 1.7 !important;
+  padding: 18px !important;
   border-radius: 10px !important;        /* Claude uses ~10px radius */
 }
 
+/* Code block inner elements */
+pre code {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
 /* ============================================================================
-   TABLES - Anthropic style: minimal, clean
+   ARTIFACTS - OWUI artifact boxes (the rounded "result" containers)
+   These often render code/snippets with tiny fonts by default.
+   ============================================================================ */
+
+[class*="artifact"],
+[class*="Artifact"] {
+  font-size: 14.5px;
+  line-height: 1.65;
+  border-radius: 12px !important;
+}
+
+[class*="artifact"] pre,
+[class*="Artifact"] pre {
+  font-size: 14.5px !important;
+  line-height: 1.7 !important;
+  padding: 18px !important;
+}
+
+[class*="artifact"] code,
+[class*="Artifact"] code {
+  font-size: 14px;
+}
+
+/* ============================================================================
+   TABLES - Anthropic style: minimal, clean, generous
    ============================================================================ */
 
 table {
@@ -198,12 +240,19 @@ table {
   border-spacing: 0 !important;
   border-radius: 10px;
   overflow: hidden;
-  font-size: 14.5px;
+  font-size: 15px;             /* bumped from 14.5 → closer to prose 16px */
+  line-height: 1.55;
 }
 
 th, td {
-  padding: 11px 15px !important;
+  padding: 12px 16px !important;       /* bumped from 11/15 → more generous */
   border-bottom-width: 1px !important;
+}
+
+th {
+  font-weight: 600;
+  font-size: 14.5px;           /* slightly smaller header, like Claude */
+  letter-spacing: -0.005em;
 }
 
 tbody tr {
