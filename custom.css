@@ -1,89 +1,192 @@
-/* =====================================================================
+/* ================================================================
    POLISH THEME for Open WebUI
-   Targets OWUI's actual Tailwind v4 tokens and class names:
-     - --color-gray-50 → --color-gray-950 (oklch)
-     - .markdown / .markdown-prose / .input-prose
-     - .hljs (highlight.js code blocks)
-     - .ProseMirror (rich text editor)
-   Strategy: override Tailwind tokens + add polish for chat UI.
-   ===================================================================== */
+   Targets OWUI's real Tailwind v4 tokens + component classes.
+   Verified class names from open-webui v0.6+ source.
+   ================================================================ */
 
-/* === DARK THEME === */
-:root.dark,
+/* ----------------------------------------------------------------
+   1. THEME TOKENS — override OWUI's oklch palette
+   ---------------------------------------------------------------- */
 :root,
+:root.dark,
 html.dark,
 .dark {
-  /* Refined dark palette: warmer blacks, lifted mid-grays */
-  --color-gray-50:  oklch(0.985 0 0);
-  --color-gray-100: oklch(0.955 0.005 270);
-  --color-gray-200: oklch(0.92  0.005 270);
-  --color-gray-300: oklch(0.85  0.008 270);
-  --color-gray-400: oklch(0.72  0.01  270);
-  --color-gray-500: oklch(0.60  0.012 270);
-  --color-gray-600: oklch(0.50  0.014 270);
-  --color-gray-700: oklch(0.40  0.016 270);
-  --color-gray-800: oklch(0.28  0.018 270);
-  --color-gray-850: oklch(0.22  0.020 270);
-  --color-gray-900: oklch(0.16  0.022 270);
-  --color-gray-950: oklch(0.10  0.024 270);
-}
+  /* Warm-neutral grays (slightly cool to match Indigo accent) */
+  --color-gray-50:  oklch(0.985 0.003 250);
+  --color-gray-100: oklch(0.965 0.005 250);
+  --color-gray-200: oklch(0.925 0.006 250);
+  --color-gray-300: oklch(0.865 0.008 250);
+  --color-gray-400: oklch(0.745 0.012 250);
+  --color-gray-500: oklch(0.625 0.014 250);
+  --color-gray-600: oklch(0.520 0.016 250);
+  --color-gray-700: oklch(0.420 0.018 250);
+  --color-gray-800: oklch(0.290 0.020 250);
+  --color-gray-850: oklch(0.235 0.022 250);
+  --color-gray-900: oklch(0.175 0.024 250);
+  --color-gray-950: oklch(0.115 0.026 250);
 
-/* Slightly warmer/cooler depending on preference */
-html.dark,
-html {
+  /* Accent: refined indigo (Claude/ChatGPT-like) */
+  --color-blue-50:  oklch(0.97 0.02 268);
+  --color-blue-100: oklch(0.93 0.05 268);
+  --color-blue-200: oklch(0.87 0.08 268);
+  --color-blue-300: oklch(0.80 0.12 268);
+  --color-blue-400: oklch(0.72 0.16 268);
   --color-blue-500: oklch(0.65 0.20 268);
-  --color-blue-600: oklch(0.58 0.22 268);
-  --color-blue-700: oklch(0.50 0.23 268);
+  --color-blue-600: oklch(0.57 0.22 268);
+  --color-blue-700: oklch(0.49 0.22 268);
+  --color-blue-800: oklch(0.40 0.20 268);
+  --color-blue-900: oklch(0.32 0.16 268);
 }
 
-/* === GLOBAL POLISH === */
-html, body, pre {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, "Helvetica Neue", Arial, sans-serif !important;
+/* ----------------------------------------------------------------
+   2. GLOBAL TYPOGRAPHY
+   ---------------------------------------------------------------- */
+html, body, pre, .ProseMirror {
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ----------------------------------------------------------------
+   3. SCROLLBAR — slim and modern
+   ---------------------------------------------------------------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.40 0.012 250) transparent;
+}
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.40 0.01 270);
+  background: oklch(0.40 0.012 250);
   border-radius: 10px;
   transition: background 0.2s ease;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.55 0.01 270);
-}
+::-webkit-scrollbar-thumb:hover { background: oklch(0.55 0.012 250); }
 
+/* Selection */
 ::selection {
   background: oklch(0.65 0.20 268 / 0.35);
   color: inherit;
 }
 
-/* === SIDEBAR === */
-/* OWUI sidebar uses #sidebar-chat-item and bg-gray-50/950 */
-#sidebar {
-  border-right: 1px solid var(--color-gray-800, oklch(0.28 0.018 270));
-  background: var(--color-gray-950, oklch(0.10 0.024 270));
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid oklch(0.65 0.20 268);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
+/* ----------------------------------------------------------------
+   4. SIDEBAR
+   ---------------------------------------------------------------- */
+#sidebar {
+  border-right: 1px solid var(--color-gray-800) !important;
+  background: var(--color-gray-950) !important;
+}
+
+/* Sidebar chat items — OWUI uses #sidebar-chat-item */
 #sidebar-chat-item {
-  border-radius: 10px;
-  margin-bottom: 2px;
-  transition: background 0.15s ease, transform 0.15s ease;
+  border-radius: 10px !important;
+  margin-bottom: 2px !important;
+  transition: background 0.15s ease, transform 0.15s ease !important;
 }
 #sidebar-chat-item:hover {
-  background: var(--color-gray-850, oklch(0.22 0.020 270));
+  background: var(--color-gray-850) !important;
   transform: translateX(2px);
 }
 #sidebar-chat-item.selected,
 #sidebar-chat-item.active {
-  background: oklch(0.58 0.22 268 / 0.16);
+  background: oklch(0.57 0.22 268 / 0.18) !important;
+  border-left: 2px solid var(--color-blue-500);
 }
 
-/* === MARKDOWN CONTENT (chat messages) === */
+/* ----------------------------------------------------------------
+   5. CHAT INPUT — refined pill
+   ---------------------------------------------------------------- */
+[class*="chat-input"],
+.chat-input-container,
+[class*="chat-input-wrapper"] {
+  border-radius: 22px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+  border: 1px solid var(--color-gray-700) !important;
+  background: var(--color-gray-900) !important;
+}
+[class*="chat-input"]:focus-within,
+.chat-input-container:focus-within,
+[class*="chat-input-wrapper"]:focus-within {
+  border-color: var(--color-blue-500) !important;
+  box-shadow: 0 0 0 3px oklch(0.65 0.20 268 / 0.15) !important;
+}
+
+/* Textarea inside */
+textarea,
+textarea[id*="chat"],
+textarea[placeholder*="message" i] {
+  background: transparent !important;
+  border: 0 !important;
+  font-family: inherit !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  padding: 14px 18px !important;
+  resize: none !important;
+}
+textarea:focus { outline: none !important; box-shadow: none !important; }
+
+/* Send button */
+#send-message-button,
+button[aria-label*="Send" i],
+button[type="submit"] {
+  border-radius: 9999px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+#send-message-button:hover,
+button[aria-label*="Send" i]:hover,
+button[type="submit"]:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px oklch(0.57 0.22 268 / 0.35);
+}
+
+/* ----------------------------------------------------------------
+   6. BUTTONS — generic polish
+   ---------------------------------------------------------------- */
+button,
+[role="button"] {
+  transition: background 0.15s ease, transform 0.12s ease,
+              box-shadow 0.15s ease !important;
+}
+
+/* Primary blue buttons (bg-blue-600 etc.) */
+button[class*="bg-blue-600"],
+button[class*="bg-blue-500"],
+button.btn-primary {
+  background-color: var(--color-blue-600) !important;
+  color: white !important;
+  border-radius: 10px !important;
+}
+button[class*="bg-blue-600"]:hover,
+button[class*="bg-blue-500"]:hover {
+  background-color: var(--color-blue-700) !important;
+}
+
+/* Toggle switches */
+[role="switch"][aria-checked="true"] {
+  background-color: var(--color-blue-600) !important;
+}
+
+/* Tooltips */
+.tippy-box,
+.tippy-content {
+  border-radius: 8px !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+}
+
+/* ----------------------------------------------------------------
+   7. MARKDOWN CONTENT — chat messages
+   ---------------------------------------------------------------- */
 .markdown,
 .markdown-prose,
 .input-prose,
@@ -92,9 +195,10 @@ html, body, pre {
   font-size: 15.5px !important;
   line-height: 1.7 !important;
   letter-spacing: -0.003em;
-  word-spacing: 0.02em;
+  word-spacing: 0.01em;
 }
 
+/* Paragraphs */
 .markdown p,
 .markdown-prose p,
 .input-prose p,
@@ -102,6 +206,7 @@ html, body, pre {
   margin: 0 0 1em 0 !important;
 }
 
+/* Headings — Claude-style serif */
 .markdown h1, .markdown h2, .markdown h3,
 .markdown-prose h1, .markdown-prose h2, .markdown-prose h3,
 .input-prose h1, .input-prose h2, .input-prose h3,
@@ -109,98 +214,105 @@ html, body, pre {
   font-family: "Source Serif Pro", "Iowan Old Style", "Apple Garamond",
                 Baskerville, "Times New Roman", serif !important;
   font-weight: 600 !important;
-  letter-spacing: -0.015em;
-  line-height: 1.25;
-  margin: 1.4em 0 0.5em 0 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.25 !important;
+  margin-top: 1.4em !important;
+  margin-bottom: 0.5em !important;
 }
-.markdown h1, .markdown-prose h1, .input-prose h1, .message-content h1 {
-  font-size: 1.8rem !important;
-}
-.markdown h2, .markdown-prose h2, .input-prose h2, .message-content h2 {
-  font-size: 1.45rem !important;
-}
-.markdown h3, .markdown-prose h3, .input-prose h3, .message-content h3 {
-  font-size: 1.2rem !important;
-}
+.markdown h1, .markdown-prose h1, .input-prose h1, .message-content h1 { font-size: 1.75rem !important; }
+.markdown h2, .markdown-prose h2, .input-prose h2, .message-content h2 { font-size: 1.45rem !important; }
+.markdown h3, .markdown-prose h3, .input-prose h3, .message-content h3 { font-size: 1.2rem !important; }
 
+/* Strong */
+.markdown strong, .markdown-prose strong, .input-prose strong,
+.message-content strong { font-weight: 600; }
+
+/* Links */
 .markdown a, .markdown-prose a, .input-prose a, .message-content a {
-  color: oklch(0.70 0.16 268) !important;
-  text-decoration: none;
-  border-bottom: 1px solid oklch(0.70 0.16 268 / 0.4);
+  color: var(--color-blue-400) !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid oklch(0.72 0.16 268 / 0.4);
   transition: background 0.15s, border-color 0.15s;
 }
-.markdown a:hover, .markdown-prose a:hover, .input-prose a:hover, .message-content a:hover {
-  background: oklch(0.58 0.22 268 / 0.12);
-  border-bottom-color: oklch(0.70 0.16 268);
+.markdown a:hover, .markdown-prose a:hover, .input-prose a:hover,
+.message-content a:hover {
+  background: oklch(0.57 0.22 268 / 0.12);
+  border-bottom-color: var(--color-blue-400);
+  border-radius: 3px;
+  padding: 0 2px;
+  margin: 0 -2px;
 }
 
+/* Lists */
 .markdown ul, .markdown ol, .markdown-prose ul, .markdown-prose ol,
 .input-prose ul, .input-prose ol, .message-content ul, .message-content ol {
   padding-left: 1.5em !important;
   margin: 0.6em 0 1em 0 !important;
 }
-.markdown li, .markdown-prose li, .input-prose li, .message-content li {
-  margin: 0.3em 0 !important;
-}
+.markdown li, .markdown-prose li, .input-prose li,
+.message-content li { margin: 0.3em 0 !important; line-height: 1.7 !important; }
+.markdown li::marker { color: var(--color-gray-400); }
 
+/* Blockquote */
 .markdown blockquote, .markdown-prose blockquote,
-.input-prose blockquote, .message-content blockquote,
-blockquote {
-  border-left: 3px solid oklch(0.58 0.22 268) !important;
-  background: oklch(0.58 0.22 268 / 0.08) !important;
-  padding: 10px 16px !important;
-  margin: 1em 0 !important;
-  border-radius: 0 8px 8px 0;
-  font-style: italic;
-  color: var(--color-gray-300, oklch(0.85 0.008 270));
+.input-prose blockquote, .message-content blockquote, blockquote {
+  border-left: 3px solid var(--color-blue-500) !important;
+  background: oklch(0.57 0.22 268 / 0.08) !important;
+  padding: 10px 18px !important;
+  margin: 1.2em 0 !important;
+  border-radius: 0 8px 8px 0 !important;
+  font-style: italic !important;
+  color: var(--color-gray-300) !important;
 }
 
 /* Tables */
 .markdown table, .markdown-prose table, .input-prose table,
 .message-content table, table {
-  border-collapse: separate;
-  border-spacing: 0;
-  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  width: 100% !important;
   margin: 1.2em 0 !important;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--color-gray-700, oklch(0.40 0.016 270));
-  font-size: 14px;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--color-gray-700) !important;
+  font-size: 14px !important;
 }
 .markdown th, .markdown-prose th, .input-prose th,
 .message-content th, th {
-  background: var(--color-gray-800, oklch(0.28 0.018 270));
-  font-weight: 600;
-  text-align: left;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--color-gray-700, oklch(0.40 0.016 270));
+  background: var(--color-gray-800) !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--color-gray-700) !important;
 }
 .markdown td, .markdown-prose td, .input-prose td,
 .message-content td, td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--color-gray-800, oklch(0.28 0.018 270));
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--color-gray-800) !important;
 }
-.markdown tbody tr:last-child td, tr:last-child td { border-bottom: 0; }
+.markdown tbody tr:last-child td, tr:last-child td { border-bottom: 0 !important; }
 .markdown tbody tr:hover, tbody tr:hover {
-  background: var(--color-gray-850, oklch(0.22 0.020 270));
+  background: var(--color-gray-850) !important;
 }
 
 /* Inline code */
-.markdown code, .markdown-prose code, .input-prose code,
-.message-content code, p > code, li > code,
-.codespan {
+.markdown code:not(pre code), .markdown-prose code:not(pre code),
+.input-prose code:not(pre code), .message-content code:not(pre code),
+.codespan, p > code, li > code {
   font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code",
                Menlo, Consolas, monospace !important;
-  font-size: 0.88em !important;
-  padding: 2px 6px !important;
-  border-radius: 5px !important;
-  background: var(--color-gray-800, oklch(0.28 0.018 270)) !important;
-  border: 1px solid var(--color-gray-700, oklch(0.40 0.016 270)) !important;
+  font-size: 0.875em !important;
+  padding: 2px 7px !important;
+  border-radius: 6px !important;
+  background: var(--color-gray-800) !important;
+  border: 1px solid var(--color-gray-700) !important;
   font-weight: 500 !important;
-  color: var(--color-gray-100, oklch(0.955 0.005 270)) !important;
+  color: var(--color-gray-100) !important;
 }
 
-/* === CODE BLOCKS === */
+/* ----------------------------------------------------------------
+   8. CODE BLOCKS — Tokyo Night palette + rounded
+   ---------------------------------------------------------------- */
 pre,
 .markdown pre,
 .markdown-prose pre,
@@ -216,22 +328,21 @@ pre > code {
   padding: 16px 20px !important;
   margin: 1em 0 !important;
   background: #1a1b26 !important;
-  border: 1px solid oklch(0.40 0.016 270 / 0.5) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
-  overflow-x: auto;
-  tab-size: 2;
+  border: 1px solid oklch(0.40 0.018 250 / 0.5) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12) !important;
+  overflow-x: auto !important;
+  tab-size: 2 !important;
 }
-
 pre code, .hljs code, pre > code {
   background: transparent !important;
   border: 0 !important;
   padding: 0 !important;
   color: #c0caf5 !important;
-  display: block;
-  white-space: pre;
+  display: block !important;
+  white-space: pre !important;
 }
 
-/* Tokyo Night syntax tokens — overrides OWUI's hljs colors */
+/* Tokyo Night syntax */
 .hljs-comment, .hljs-quote           { color: #565f89 !important; font-style: italic; }
 .hljs-keyword, .hljs-selector-tag,
 .hljs-literal, .hljs-section,
@@ -253,11 +364,11 @@ pre code, .hljs code, pre > code {
 .hljs-operator, .hljs-punctuation        { color: #89ddff !important; }
 .hljs-property                            { color: #73daca !important; }
 .hljs-regexp                              { color: #f7768e !important; }
-.hljs-deletion                            { color: #f7768e !important; background: oklch(0.65 0.20 25 / 0.15); }
-.hljs-emphasis                           { font-style: italic; }
-.hljs-strong                             { font-weight: 700; }
+.hljs-deletion                            { color: #f7768e !important; }
+.hljs-emphasis                            { font-style: italic; }
+.hljs-strong                              { font-weight: 700; }
 
-/* Code block copy button (OWUI renders this) */
+/* Code block copy button */
 .codeblock-copy,
 .copy-code-button,
 button[class*="copy"] {
@@ -265,107 +376,78 @@ button[class*="copy"] {
   padding: 4px 10px !important;
   font-size: 12px !important;
   background: rgba(255,255,255,.06) !important;
-  border: 1px solid oklch(0.40 0.016 270) !important;
-  color: var(--color-gray-300, oklch(0.85 0.008 270)) !important;
-  transition: background 0.15s;
+  border: 1px solid oklch(0.40 0.018 250) !important;
+  color: var(--color-gray-300) !important;
+  transition: background 0.15s ease !important;
 }
 .codeblock-copy:hover,
-.copy-code-button:hover {
+.copy-code-button:hover,
+button[class*="copy"]:hover {
   background: rgba(255,255,255,.12) !important;
 }
 
-/* === INPUTS & TEXTAREAS === */
-textarea,
-input[type="text"],
-input[type="search"],
-input:not([type]),
-.chat-input {
-  font-family: inherit !important;
-  font-size: 15px !important;
-  line-height: 1.5 !important;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-}
-
-/* Chat input pill — OWUI uses bg-gray-900 dark:bg-gray-950 on the wrapper */
-[class*="chat-input"],
-.chat-input-container {
-  border-radius: 22px !important;
-  transition: border-color 0.15s, box-shadow 0.15s !important;
-}
-[class*="chat-input"]:focus-within,
-.chat-input-container:focus-within {
-  border-color: oklch(0.58 0.22 268 / 0.6) !important;
-  box-shadow: 0 0 0 4px oklch(0.58 0.22 268 / 0.12) !important;
-}
-
-/* === BUTTONS === */
-button.btn,
-button[class*="btn-primary"],
-.btn-primary,
-button[class*="bg-blue-600"],
-button[class*="bg-blue-500"] {
-  border-radius: 10px !important;
-  font-weight: 500 !important;
-  letter-spacing: -0.005em;
-  transition: transform 0.12s, box-shadow 0.12s, background 0.12s !important;
-}
-button.btn:hover,
-.btn-primary:hover,
-button[class*="bg-blue-600"]:hover,
-button[class*="bg-blue-500"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px oklch(0.58 0.22 268 / 0.3);
-}
-
-/* === PROSEMIRROR (rich text input) === */
+/* ----------------------------------------------------------------
+   9. PROSEMIRROR (rich text input)
+   ---------------------------------------------------------------- */
 .ProseMirror {
   font-family: inherit !important;
   font-size: 15px !important;
   line-height: 1.6 !important;
 }
-.ProseMirror:focus {
-  outline: none;
+.ProseMirror:focus { outline: none !important; }
+
+/* ----------------------------------------------------------------
+   10. MODALS — rounded, soft shadow
+   ---------------------------------------------------------------- */
+.modal-box,
+[class*="modal"],
+[role="dialog"] {
+  border-radius: 16px !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,.2) !important;
 }
 
-/* === ANIMATIONS === */
+/* ----------------------------------------------------------------
+   11. MESSAGE FADE-IN
+   ---------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
-  .message,
-  [class*="message-"] {
-    animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  [class*="message-"],
+  .message-bubble {
+    animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 }
 
-/* === ARTIFACT CARDS === */
-/* Use .artifact or .claude-artifact class in markdown */
+/* ----------------------------------------------------------------
+   12. ARTIFACT CARDS (Claude-style)
+   Use <div class="artifact">…</div> in chat messages
+   ---------------------------------------------------------------- */
 .artifact,
 .claude-artifact {
-  display: block;
-  margin: 1.2em 0;
-  padding: 0;
-  border-radius: 12px;
-  background: oklch(0.22 0.020 270 / 0.5);
-  border: 1px solid oklch(0.40 0.016 270);
-  border-left: 3px solid oklch(0.65 0.20 268);
-  box-shadow: 0 1px 3px rgba(0,0,0,.06);
-  overflow: hidden;
-  position: relative;
+  display: block !important;
+  margin: 1.2em 0 !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  background: oklch(0.235 0.022 250 / 0.6) !important;
+  border: 1px solid var(--color-gray-700) !important;
+  border-left: 3px solid var(--color-blue-500) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06) !important;
+  overflow: hidden !important;
 }
 .artifact::before,
 .claude-artifact::before {
-  content: "ARTIFACT";
-  display: block;
-  padding: 8px 18px;
-  background: oklch(0.58 0.22 268 / 0.12);
-  border-bottom: 1px solid oklch(0.58 0.22 268 / 0.2);
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: oklch(0.78 0.14 268);
+  content: "ARTIFACT" !important;
+  display: block !important;
+  padding: 8px 18px !important;
+  background: oklch(0.57 0.22 268 / 0.12) !important;
+  border-bottom: 1px solid oklch(0.57 0.22 268 / 0.2) !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--color-blue-300) !important;
 }
 .artifact > pre,
 .claude-artifact > pre,
@@ -375,11 +457,4 @@ button[class*="bg-blue-500"]:hover {
   margin: 0 !important;
   border: 0 !important;
   box-shadow: none !important;
-}
-
-/* === HIGH CONTRAST / FOCUS === */
-:focus-visible {
-  outline: 2px solid oklch(0.65 0.20 268);
-  outline-offset: 2px;
-  border-radius: 6px;
 }
